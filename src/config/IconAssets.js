@@ -44,6 +44,8 @@ const icon = {
   resort: require('../assets/icons/resort.png'),
   rightArrow: require('../assets/icons/right-arrow.png'),
   search: require('../assets/icons/search.png'),
+  search2: require('../assets/icons/search2.png'),
+
   seat: require('../assets/icons/seat.png'),
   shield: require('../assets/icons/shield.png'),
   snpl: require('../assets/icons/snpl.png'),

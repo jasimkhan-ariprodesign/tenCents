@@ -4,6 +4,7 @@ export {s as _s, vs as _vs, ms as _ms, mvs as _mvs};
 
 export const _fonts = {
   londonBetween: 'LondonBetween',
+  londonTwo: 'LondonTwo',
 
   poppinsRegular: 'Poppins-Regular',
   poppinsSemiBold: 'Poppins-SemiBold',

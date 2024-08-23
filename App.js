@@ -61,7 +61,11 @@ console.log('App.js ---  not update folder...');
 const App = () => {
   return (
     <NavigationContainer>
-      <StatusBar translucent={true} backgroundColor={'transparent'} />
+      <StatusBar
+        translucent={true}
+        backgroundColor={'transparent'}
+        barStyle="light-content"
+      />
       <RootStack.Navigator
         initialRouteName="wlscrn"
         screenOptions={{headerShown: false}}>

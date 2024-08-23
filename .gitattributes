@@ -1,0 +1,20 @@
+# Auto detect text files and normalize line endings to LF in the repository.
+* text=auto
+
+# Explicitly set specific file types to use LF line endings
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.scss  text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+
+# For image and binary files, do not change line endings
+*.png   binary
+*.jpg   binary
+*.gif   binary
+*.pdf   binary
