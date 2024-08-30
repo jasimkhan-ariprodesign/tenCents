@@ -7,14 +7,13 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {b1, b3, black, blue, w1, white} from '../../../config/colors';
-import icon, {cross, minus, plus} from '../../../config/IconAssets';
-import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
-import {formatDate} from '../../../config/CurrentDate';
+import {b1, b3, black, blue, w1, white} from '../../../../config/colors';
+import icon, {check, cross, minus, plus} from '../../../../config/IconAssets';
+import {_fonts, _ms, _s, _vs} from '../../../utils/Responsive';
+import {formatDate} from '../../../../config/CurrentDate';
 
-const RoundTrip = ({
+const HotelPlusCar = ({
   navigation,
-  dest,
   oneWayHandler,
   setOneWayHandler,
   roundTripHandler,
@@ -23,12 +22,10 @@ const RoundTrip = ({
   const [isClass, setIsClass] = useState(false);
   const [isTravel, setIsTravel] = useState(false);
 
-  // const [passengerClass, setPassengerClass] = useState('Economy');
+  const [homesAndApartments, setHomesAndApartments] = useState('H&A');
 
   const [origin, setOrigin] = useState('origin');
   const [destination, setDestination] = useState('destination');
-
-  // console.log('origin ------> ', origin, 'destination ----> ', destination);
 
   const handleReverseLocations = () => {
     setOneWayHandler(prevState => ({
@@ -37,7 +34,6 @@ const RoundTrip = ({
       destination: prevState.origin,
     }));
   };
-  // console.log(roundTripHandler?.returnDateRoundTrip); -------------------------------
 
   return (
     <View style={styles.main}>
@@ -48,13 +44,14 @@ const RoundTrip = ({
 
           <TouchableOpacity
             onPress={() => {
-              setOneWayHandler({...oneWayHandler, showSearchCon: true});
+              // setOneWayHandler({...oneWayHandler, showSearchCon: true});
             }}
             style={styles.enterLocBtn}>
             <Text style={styles.enterLocTxt}>
-              {oneWayHandler?.origin?.length > 0
+              {/* {oneWayHandler?.origin?.length > 0
                 ? oneWayHandler?.origin
-                : 'Enter Location'}
+                : 'Enter Location'} */}
+              Enter Location
             </Text>
           </TouchableOpacity>
 
@@ -62,7 +59,7 @@ const RoundTrip = ({
         </View>
 
         <TouchableOpacity
-          onPress={handleReverseLocations}
+          // onPress={handleReverseLocations}
           style={styles.reverseBtn}>
           <Image style={styles.reverseIcon} source={icon.exchange} />
         </TouchableOpacity>
@@ -74,13 +71,14 @@ const RoundTrip = ({
 
           <TouchableOpacity
             onPress={() => {
-              setOneWayHandler({...oneWayHandler, showSearchCon: true});
+              // setOneWayHandler({...oneWayHandler, showSearchCon: true});
             }}
             style={styles.enterLocBtn}>
             <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
-              {oneWayHandler?.destination?.length > 0
+              {/* {oneWayHandler?.destination?.length > 0
                 ? oneWayHandler?.destination
-                : 'Enter Location'}
+                : 'Enter Location'} */}
+              Enter Location
             </Text>
           </TouchableOpacity>
 
@@ -100,12 +98,13 @@ const RoundTrip = ({
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('traveldate');
-              setOneWayHandler({...oneWayHandler, showCalenderCon: true});
+              // setOneWayHandler({...oneWayHandler, showCalenderCon: true});
             }}>
             <Text style={styles.enterLocTxt}>
-              {oneWayHandler?.date?.length > 0
+              {/* {oneWayHandler?.date?.length > 0
                 ? `${formatDate(oneWayHandler.date)}`
-                : 'Select Date'}
+                : 'Select Date'} */}
+              Select Date
             </Text>
           </TouchableOpacity>
 
@@ -118,15 +117,16 @@ const RoundTrip = ({
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('traveldate');
-              setRoundTripHandler({
-                ...roundTripHandler,
-                showCalenderConRoundTrip: true,
-              });
+              // setRoundTripHandler({
+              //   ...roundTripHandler,
+              //   showCalenderConRoundTrip: true,
+              // });
             }}>
             <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
-              {roundTripHandler?.returnDateRoundTrip?.length > 0
+              {/* {roundTripHandler?.returnDateRoundTrip?.length > 0
                 ? `${formatDate(roundTripHandler.returnDateRoundTrip)}`
-                : 'Select Date'}
+                : 'Select Date'} */}
+              Select Date
             </Text>
           </TouchableOpacity>
 
@@ -156,13 +156,14 @@ const RoundTrip = ({
                 styles.enterLocTxt,
                 // {fontSize: children > 0 && infants > 0 ? _ms(14) : _ms(16)},
               ]}>
-              {`${oneWayHandler?.adults} Adult`}
+              {/* {`${oneWayHandler?.adults} Adult`}
               {oneWayHandler?.childrens > 0
                 ? ` ${oneWayHandler?.childrens} Children`
                 : null}
               {oneWayHandler?.infants > 0
                 ? ` ${oneWayHandler?.infants} Infant`
-                : null}
+                : null} */}
+              1 Adult
             </Text>
           </TouchableOpacity>
         </View>
@@ -188,32 +189,32 @@ const RoundTrip = ({
               <View style={styles.btn}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (oneWayHandler?.adults <= 1) {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        adults: 1,
-                      });
-                    } else {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        adults: oneWayHandler.adults - 1,
-                      });
-                    }
+                    // if (oneWayHandler?.adults <= 1) {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     adults: 1,
+                    //   });
+                    // } else {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     adults: oneWayHandler.adults - 1,
+                    //   });
+                    // }
                   }}
                   style={styles.minusButton}>
                   <Image source={minus} style={styles.minusIconStyle} />
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  {oneWayHandler?.adults}
+                  {/* {oneWayHandler?.adults} */}0
                 </Text>
 
                 <TouchableOpacity
                   onPress={() => {
-                    setOneWayHandler({
-                      ...oneWayHandler,
-                      adults: oneWayHandler?.adults + 1,
-                    });
+                    // setOneWayHandler({
+                    //   ...oneWayHandler,
+                    //   adults: oneWayHandler?.adults + 1,
+                    // });
                   }}
                   style={styles.minusButton}>
                   <Image source={plus} style={styles.minusIconStyle} />
@@ -230,32 +231,32 @@ const RoundTrip = ({
               <View style={styles.btn}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (oneWayHandler.childrens <= 0) {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        childrens: 0,
-                      });
-                    } else {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        childrens: oneWayHandler.childrens - 1,
-                      });
-                    }
+                    // if (oneWayHandler.childrens <= 0) {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     childrens: 0,
+                    //   });
+                    // } else {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     childrens: oneWayHandler.childrens - 1,
+                    //   });
+                    // }
                   }}
                   style={styles.minusButton}>
                   <Image source={minus} style={styles.minusIconStyle} />
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  {oneWayHandler?.childrens}
+                  {/* {oneWayHandler?.childrens} */}0
                 </Text>
 
                 <TouchableOpacity
                   onPress={() => {
-                    setOneWayHandler({
-                      ...oneWayHandler,
-                      childrens: oneWayHandler.childrens + 1,
-                    });
+                    // setOneWayHandler({
+                    //   ...oneWayHandler,
+                    //   childrens: oneWayHandler.childrens + 1,
+                    // });
                   }}
                   style={styles.minusButton}>
                   <Image source={plus} style={styles.minusIconStyle} />
@@ -272,32 +273,32 @@ const RoundTrip = ({
               <View style={styles.btn}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (oneWayHandler.infants <= 0) {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        infants: 0,
-                      });
-                    } else {
-                      setOneWayHandler({
-                        ...oneWayHandler,
-                        infants: oneWayHandler.infants - 1,
-                      });
-                    }
+                    // if (oneWayHandler.infants <= 0) {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     infants: 0,
+                    //   });
+                    // } else {
+                    //   setOneWayHandler({
+                    //     ...oneWayHandler,
+                    //     infants: oneWayHandler.infants - 1,
+                    //   });
+                    // }
                   }}
                   style={styles.minusButton}>
                   <Image source={minus} style={styles.minusIconStyle} />
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  {oneWayHandler?.infants}
+                  {/* {oneWayHandler?.infants} */}0
                 </Text>
 
                 <TouchableOpacity
                   onPress={() => {
-                    setOneWayHandler({
-                      ...oneWayHandler,
-                      infants: oneWayHandler.infants + 1,
-                    });
+                    // setOneWayHandler({
+                    //   ...oneWayHandler,
+                    //   infants: oneWayHandler.infants + 1,
+                    // });
                   }}
                   style={styles.minusButton}>
                   <Image source={plus} style={styles.minusIconStyle} />
@@ -309,7 +310,7 @@ const RoundTrip = ({
 
         <View style={styles.classCon}>
           <View style={styles.classChildCon}>
-            <Text style={styles.fromTxt}>{'Class'}</Text>
+            <Text style={styles.fromTxt}>{'Room'}</Text>
             <Image style={styles.imgCls} source={icon.rightArrow} />
           </View>
 
@@ -319,109 +320,95 @@ const RoundTrip = ({
               setIsTravel(false);
             }}
             style={styles.travellersBtn}>
-            <Text style={styles.enterLocTxt}>{oneWayHandler?.flightClass}</Text>
+            <Text style={styles.enterLocTxt}>
+              {/* {oneWayHandler?.flightClass} */}1 Room
+            </Text>
           </TouchableOpacity>
         </View>
 
-        {/* class sellection ---------------------------------------------------------- */}
+        {/* room sellection ---------------------------------------------------------- */}
 
-        {dest === 'opt2'
-          ? isClass && (
-              <View style={styles.classOptnsWrap}>
-                <TouchableOpacity
-                  style={styles.classOptnTxtWrapActive}
-                  onPress={() => setIsClass(false)}>
-                  <Text style={styles.classOptnTxtActive}>1 Room</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.classOptnTxtWrap}
-                  onPress={() => setIsClass(false)}>
-                  <Text style={styles.classOptnTxt}>2 Room</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.classOptnTxtWrap}
-                  onPress={() => setIsClass(false)}>
-                  <Text style={styles.classOptnTxt}>3 Room</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.classOptnTxtWrap}
-                  onPress={() => setIsClass(false)}>
-                  <Text style={styles.classOptnTxt}>4 Room</Text>
-                </TouchableOpacity>
-              </View>
-            )
-          : isClass && (
-              <View style={styles.classOptnsWrap}>
-                {['Economy', 'Premium Economy', 'Business', 'First Class'].map(
-                  item => {
-                    return (
-                      <TouchableOpacity
-                        key={item}
-                        style={
-                          oneWayHandler?.flightClass == item
-                            ? styles.classOptnTxtWrapActive
-                            : styles.classOptnTxtWrap
-                        }
-                        onPress={() => {
-                          setIsClass(false);
-                          setOneWayHandler({
-                            ...oneWayHandler,
-                            flightClass: item,
-                          });
-                        }}>
-                        <Text
-                          style={
-                            oneWayHandler?.flightClass == item
-                              ? styles.classOptnTxtActive
-                              : styles.classOptnTxt
-                          }>
-                          {item}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  },
-                )}
-              </View>
+        {isClass && (
+          <View style={styles.classOptnsWrap}>
+            {['Economy', 'Premium Economy', 'Business', 'First Class'].map(
+              item => {
+                return (
+                  <TouchableOpacity
+                    key={item}
+                    style={
+                      oneWayHandler?.flightClass == item
+                        ? styles.classOptnTxtWrapActive
+                        : styles.classOptnTxtWrap
+                    }
+                    onPress={() => {
+                      setIsClass(false);
+                      // setOneWayHandler({
+                      //   ...oneWayHandler,
+                      //   flightClass: item,
+                      // });
+                    }}>
+                    <Text
+                      style={
+                        oneWayHandler?.flightClass == item
+                          ? styles.classOptnTxtActive
+                          : styles.classOptnTxt
+                      }>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              },
             )}
+          </View>
+        )}
       </View>
 
-      {/* search preferred airline */}
+      {/* search hotel */}
 
       <>
         <View style={styles.preferredAirLineCon}>
           <Image style={styles.searchIconStyle} source={icon.search} />
 
           <TextInput
-            placeholder="Search Preferred Airline"
+            placeholder="Hotel Name"
             placeholderTextColor={b3}
             style={styles.searchPreferredAirLineInput}
-            multiline
           />
         </View>
 
-        {/* Return to or from another city/airport? */}
-
         <View style={styles.R_F_A_cityContainer}>
-          <TouchableOpacity style={styles.radioButton}>
-            <View style={styles.radio} />
+          <TouchableOpacity
+            onPress={() => setHomesAndApartments('forParty')}
+            style={[
+              styles.radioButton,
+              {
+                backgroundColor:
+                  homesAndApartments == 'forParty' ? blue : white,
+              },
+            ]}>
+            <Image source={check} style={styles.checkIcon} />
           </TouchableOpacity>
 
           <Text style={styles.searchTxt}>
-            Return to or from another city/airport?
+            I only need this hotel for part of my trip
           </Text>
         </View>
 
         <View style={styles.R_F_A_cityContainer}>
-          <TouchableOpacity style={styles.radioButton}>
-            <View style={styles.radio} />
+          <TouchableOpacity
+            onPress={() => setHomesAndApartments('H&A')}
+            style={[
+              styles.radioButton,
+              {
+                backgroundColor: homesAndApartments == 'H&A' ? blue : white,
+              },
+            ]}>
+            <Image source={check} style={styles.checkIcon} />
           </TouchableOpacity>
-          <Text style={styles.searchTxt}>Direct Flights</Text>
+          <Text style={styles.searchTxt}>Homes & Apartments</Text>
         </View>
 
-        {/* group types & currency */}
+        {/* hotel Rating */}
         <View
           style={{
             marginTop: _ms(13),
@@ -431,18 +418,7 @@ const RoundTrip = ({
           {/* group types */}
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.searchTxt}>Select Group Type</Text>
-            <Image style={styles.arrow} source={icon.rightArrow} />
-          </TouchableOpacity>
-
-          {/* currency */}
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: _ms(10),
-            }}>
-            <Text style={styles.searchTxt}>Select currency</Text>
+            <Text style={styles.searchTxt}>Hotel Rating</Text>
             <Image style={styles.arrow} source={icon.rightArrow} />
           </TouchableOpacity>
         </View>
@@ -451,14 +427,14 @@ const RoundTrip = ({
   );
 };
 
-export default RoundTrip;
+export default HotelPlusCar;
 
 const styles = StyleSheet.create({
   main: {
     backgroundColor: white,
     // backgroundColor: 'red',
     paddingVertical: _vs(5),
-    paddingTop: _vs(20),
+    paddingTop: _vs(10),
     paddingHorizontal: _ms(10),
   },
 
@@ -704,16 +680,16 @@ const styles = StyleSheet.create({
   preferredAirLineCon: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 5,
-    paddingLeft: _ms(5),
+    paddingVertical: 2,
+    paddingHorizontal: _ms(5),
     overflow: 'hidden',
     alignSelf: 'flex-start',
     borderBottomWidth: 1,
     borderColor: '#DEDEDE',
 
     zIndex: -1,
-
-    // FbackgroundColor: 'blue',
+    maxWidth: '99%',
+    // backgroundColor: 'blue',
   },
 
   searchIconStyle: {
@@ -726,36 +702,39 @@ const styles = StyleSheet.create({
   searchPreferredAirLineInput: {
     color: b3,
     padding: 0,
-    paddingHorizontal: _ms(15),
-    fontSize: _ms(10),
-
-    // backgroundColor: 'red',
-    // fontFamily: _fonts.nunitoSansRegular,
+    paddingHorizontal: _ms(8),
+    fontSize: _ms(12),
+    // fontWeight: 'bold',
+    fontFamily: _fonts.nunitoSansSemiBold,
+    minWidth: '30%',
+    maxWidth: '100%',
   },
 
   R_F_A_cityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: _ms(15),
+    marginTop: _ms(10),
     paddingLeft: _ms(5),
     gap: _ms(5),
     zIndex: -1,
   },
 
   radioButton: {
-    borderWidth: 1,
+    width: _ms(17),
+    height: _ms(17),
+    borderWidth: 2,
     borderColor: blue,
-    padding: 3,
     borderRadius: _ms(15),
+    backgroundColor: blue,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  radio: {
+  checkIcon: {
     width: _ms(10),
     height: _ms(10),
-    borderRadius: _ms(15),
-    // borderWidth: 1,
-    // borderColor: blue,
-    backgroundColor: blue,
+    tintColor: white,
+    resizeMode: 'contain',
   },
 
   searchTxt: {

@@ -6,10 +6,10 @@ import {it} from '@jest/globals';
 
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
-import Search from '../src/screens/bottomnav/Search';
-import MyTrips from '../src/screens/bottomnav/MyTrips';
-import Deals from '../src/screens/bottomnav/Deals';
-import Rewards from '../src/screens/bottomnav/Rewards';
+import Search from '../src/screens/bottom_navigation/Search';
+import MyTrips from '../src/screens/bottom_navigation/MyTrips';
+import Deals from '../src/screens/bottom_navigation/Deals';
+import Rewards from '../src/screens/bottom_navigation/Rewards';
 
 it('Search renders correctly', () => {
   renderer.create(<Search />);

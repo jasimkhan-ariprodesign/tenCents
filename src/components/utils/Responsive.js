@@ -1,3 +1,4 @@
+import {Dimensions} from 'react-native';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 export {s as _s, vs as _vs, ms as _ms, mvs as _mvs};
@@ -28,3 +29,7 @@ export const _fonts = {
   ralewaySemiBold: 'Raleway-SemiBold',
   ralewayBold: 'Raleway-Bold',
 };
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+
+export {SCREEN_WIDTH, SCREEN_HEIGHT};

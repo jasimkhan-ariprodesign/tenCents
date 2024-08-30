@@ -1,37 +1,22 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {b1, b3, black, blackTxt, blue, w1, white} from '../../../config/colors';
-import icon, {cross, minus, plus} from '../../../config/IconAssets';
-import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
-import SearchButton from '../../SearchButton';
-import {formatDate} from '../../../config/CurrentDate';
+import icon, {cross, minus, plus} from '../../../../config/IconAssets';
+import {b1, b3, black, w1, white, blue} from '../../../../config/colors';
+import {_fonts, _ms, _s, _vs} from '../../../utils/Responsive';
+import {formatDate} from '../../../../config/CurrentDate';
 
-const OneWay = ({
+const OneWayFlightPlusHotels = ({
   navigation,
-  dest,
-  isClass,
-  isTravel,
-  handleTravellers,
-  handleClassType,
   oneWayHandler,
   setOneWayHandler,
+  handleTravellers,
+  handleClassType,
+  isClass,
+  isTravel,
 }) => {
-  // console.log(dest, '----------');
-
-  // const [adults, setAdults] = useState(1);
-  // const [children, setChildren] = useState(0);
-  // const [infants, setInfants] = useState(0);
-
-  // const [passengerClass, setPassengerClass] = useState('Economy');
+  // all data's are wrong and does not relate to this compo
 
   const handleReverseLocations = () => {
-    // this is for later.....
-    // const [origin, setOrigin] = useState('origin');
-    // const [destination, setDestination] = useState('destination');
-    // const temp = origin;
-    // setOrigin(destination);
-    // setDestination(temp);
-
     setOneWayHandler(prevState => ({
       ...prevState,
       origin: prevState.destination,
@@ -126,6 +111,8 @@ const OneWay = ({
 
             <TouchableOpacity
               onPress={() => {
+                // setIsClass(false);
+                // setIsTravel(!isTravel);
                 handleTravellers();
               }}
               style={[styles.travellersBtn]}>
@@ -152,6 +139,8 @@ const OneWay = ({
             <View style={styles.travlOptnsWrap}>
               <TouchableOpacity
                 onPress={() => {
+                  //   setIsClass(false);
+                  //   setIsTravel(!isTravel);
                   handleTravellers();
                 }}
                 style={styles.closeButton}>
@@ -288,103 +277,74 @@ const OneWay = ({
 
           <View style={styles.classCon}>
             <View style={styles.classChildCon}>
-              <Text style={styles.fromTxt}>{'Class'}</Text>
+              <Text style={styles.fromTxt}>{'Room'}</Text>
               <Image style={styles.imgCls} source={icon.rightArrow} />
             </View>
 
             <TouchableOpacity
               onPress={() => {
-                handleClassType();
-                // setIsClass(!isClass);
                 // setIsTravel(false);
+                // setIsClass(!isClass);
+                handleClassType();
               }}
               style={[styles.travellersBtn]}>
               <Text style={[styles.enterLocTxt]}>
-                {oneWayHandler?.flightClass}
+                {/* {oneWayHandler?.flightClass} */}1 Room
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* class sellection ---------------------------------------------------------- */}
 
-          {dest === 'opt2'
-            ? isClass && (
-                <View style={styles.classOptnsWrap}>
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrapActive}
-                    onPress={handleClassType}>
-                    <Text style={styles.classOptnTxtActive}>1 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={handleClassType}>
-                    <Text style={styles.classOptnTxt}>2 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={handleClassType}>
-                    <Text style={styles.classOptnTxt}>3 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={handleClassType}>
-                    <Text style={styles.classOptnTxt}>4 Room</Text>
-                  </TouchableOpacity>
-                </View>
-              )
-            : isClass && (
-                <View style={styles.classOptnsWrap}>
-                  {[
-                    'Economy',
-                    'Premium Economy',
-                    'Business',
-                    'First Class',
-                  ].map(item => {
-                    return (
-                      <TouchableOpacity
-                        key={item}
+          {isClass && (
+            <View style={styles.classOptnsWrap}>
+              {['Economy', 'Premium Economy', 'Business', 'First Class'].map(
+                item => {
+                  return (
+                    <TouchableOpacity
+                      key={item}
+                      style={
+                        oneWayHandler?.flightClass == item
+                          ? styles.classOptnTxtWrapActive
+                          : styles.classOptnTxtWrap
+                      }
+                      onPress={() => {
+                        setOneWayHandler({
+                          ...oneWayHandler,
+                          flightClass: item,
+                        });
+                        // setIsTravel(false);
+                        // setIsClass(!isClass);
+                        handleClassType();
+                      }}>
+                      <Text
                         style={
                           oneWayHandler?.flightClass == item
-                            ? styles.classOptnTxtWrapActive
-                            : styles.classOptnTxtWrap
-                        }
-                        onPress={() => {
-                          setOneWayHandler({
-                            ...oneWayHandler,
-                            flightClass: item,
-                          });
-                          handleClassType();
-                        }}>
-                        <Text
-                          style={
-                            oneWayHandler?.flightClass == item
-                              ? styles.classOptnTxtActive
-                              : styles.classOptnTxt
-                          }>
-                          {item}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
+                            ? styles.classOptnTxtActive
+                            : styles.classOptnTxt
+                        }>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                },
               )}
+            </View>
+          )}
         </View>
       </View>
     </>
   );
 };
 
-export default OneWay;
+export default OneWayFlightPlusHotels;
 
 const styles = StyleSheet.create({
   main: {
     backgroundColor: white,
     // backgroundColor: 'red',
-    paddingVertical: _vs(5),
-    paddingTop: _vs(20),
+    paddingVertical: _ms(5),
+    paddingTop: _ms(20),
     paddingHorizontal: _ms(10),
     zIndex: 99,
   },
@@ -409,7 +369,7 @@ const styles = StyleSheet.create({
 
   enterLocBtn: {
     // backgroundColor: 'red',
-    paddingVertical: _vs(5),
+    paddingVertical: _ms(5),
     // paddingHorizontal: _s(2),
   },
 
@@ -467,7 +427,7 @@ const styles = StyleSheet.create({
 
   travellersBtn: {
     // backgroundColor: 'red',
-    paddingVertical: _vs(5),
+    paddingVertical: _ms(5),
     paddingHorizontal: _s(2),
     borderRadius: 5,
     flexDirection: 'row',
@@ -505,11 +465,11 @@ const styles = StyleSheet.create({
     left: _s(70),
     borderRadius: 2,
     padding: _s(5),
-    paddingVertical: _vs(15),
+    paddingVertical: _ms(15),
 
     elevation: 20,
     shadowColor: black,
-    gap: _vs(5),
+    gap: _ms(5),
   },
 
   travelContWrap: {
@@ -517,7 +477,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: _vs(10),
+    gap: _ms(10),
   },
 
   travelHdTxt: {

@@ -2,11 +2,11 @@ import {View, Text} from 'react-native';
 import React from 'react';
 import CalenderTest from '../../temp/CalenderTest';
 
-const TravelDate = () => {
+const TravelDate = ({navigation}) => {
   return (
     <View>
       {/* <Text>TravelDate</Text> */}
-      <CalenderTest />
+      <CalenderTest navigation={navigation} />
     </View>
   );
 };

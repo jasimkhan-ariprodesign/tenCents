@@ -3,16 +3,17 @@ import React, {useState} from 'react';
 import {b1, b3, black, blue, w1, white} from '../../../config/colors';
 import icon, {cross, minus, plus} from '../../../config/IconAssets';
 import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
-import LinearGradient from 'react-native-linear-gradient';
 
-const MultiCity = ({navigation, dest}) => {
+const MultiCity = ({
+  navigation,
+  dest,
+  multiCityHandler,
+  setMultiCityHandler,
+  multiCityFlights,
+  setMultiCityFlights,
+}) => {
   const [isClass, setIsClass] = useState(false);
   const [isTravel, setIsTravel] = useState(false);
-
-  //  for flight two
-
-  const [isClass2, setIsClass2] = useState(false);
-  const [isTravel2, setIsTravel2] = useState(false);
 
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -20,571 +21,355 @@ const MultiCity = ({navigation, dest}) => {
 
   const [passengerClass, setPassengerClass] = useState('Economy');
 
-  const [origin, setOrigin] = useState('origin');
-  const [destination, setDestination] = useState('destination');
+  const handleReverseLocations = index => {
+    const updatedFlights = multiCityFlights.map((flight, i) =>
+      i === index
+        ? {...flight, origin: flight.destination, destination: flight.origin}
+        : flight,
+    );
+    setMultiCityFlights(updatedFlights);
+  };
 
-  // console.log('origin ------> ', origin, 'destination ----> ', destination);
-
-  const handleReverseLocations = () => {
-    const temp = origin;
-    setOrigin(destination);
-    setDestination(temp);
+  // Handle delete a flight
+  const removeFlight = index => {
+    const updatedFlights = [...multiCityFlights];
+    updatedFlights.splice(index, 1);
+    setMultiCityFlights(updatedFlights);
   };
 
   return (
-    <View style={{backgroundColor: 'transparent'}}>
-      <View style={[styles.main]}>
-        <Text style={styles.flightOneTxt}>Flight 1</Text>
-        {/* top selection row */}
-        <View style={styles.topWrap}>
-          <View style={styles.left}>
-            <Text style={styles.fromTxt}>From</Text>
+    <>
+      {multiCityFlights?.map((item, index) => (
+        <View key={index} style={{backgroundColor: 'transparent'}}>
+          <View
+            style={[
+              styles.main,
+              {
+                borderRadius: index == 0 ? 0 : 5,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+              },
+            ]}>
+            <View style={styles.deleteflightCon}>
+              <Text style={styles.flightOneTxt}>Flight {index + 1}</Text>
 
-            <TouchableOpacity style={styles.enterLocBtn}>
-              <Text style={styles.enterLocTxt}>Enter Location</Text>
-            </TouchableOpacity>
+              {/*  delete flight button  */}
+              {index > 1 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    removeFlight(index);
+                  }}
+                  style={styles.deleteflightBtn}>
+                  <Image source={minus} style={styles.deleteIcon} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
 
-            <Text style={styles.fromTxt}>Origin</Text>
-          </View>
+            {/* top selection row */}
+            <View style={styles.topWrap}>
+              <View style={styles.left}>
+                <Text style={styles.fromTxt}>From</Text>
 
-          <TouchableOpacity style={styles.reverseBtn}>
-            <Image style={styles.reverseIcon} source={icon.exchange} />
-          </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setMultiCityHandler({
+                      ...multiCityHandler,
+                      showSearchConMultiCity: true,
+                      currentIndex: index,
+                    });
+                  }}
+                  style={styles.enterLocBtn}>
+                  <Text style={styles.enterLocTxt}>
+                    {item?.origin.length > 0 ? item.origin : 'Enter Location'}
+                  </Text>
+                </TouchableOpacity>
 
-          <View style={styles.right}>
-            <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
-              Destination
-            </Text>
+                <Text style={styles.fromTxt}>Origin</Text>
+              </View>
 
-            <TouchableOpacity style={styles.enterLocBtn}>
-              <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
-                Enter Location
-              </Text>
-            </TouchableOpacity>
-
-            <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
-              Destination
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.horizontalLine} />
-
-        {/* middle selection row */}
-        <View
-          style={{
-            paddingTop: 5,
-            alignItems: 'flex-start',
-          }}>
-          <Text style={styles.fromTxt}>Depart</Text>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('traveldate')}
-            style={styles.enterLocBtn}>
-            <Text style={styles.enterLocTxt}>Select Date</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.fromTxt}>Day</Text>
-        </View>
-
-        <View style={styles.horizontalLine} />
-
-        {/* bottom selection row */}
-        <View style={[styles.travellersAndClassCon]}>
-          <View style={styles.travellersCon}>
-            <Text style={styles.fromTxt}>Travellers</Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                setIsTravel(!isTravel);
-                setIsClass(false);
-                // handleTravellersSellection();
-              }}
-              style={[styles.travellersBtn]}>
-              <Text
-                style={[
-                  styles.enterLocTxt,
-                  {},
-                  // {fontSize: children > 0 && infants > 0 ? _ms(14) : _ms(16)},
-                ]}>
-                {`${adults} Adult`}
-                {children > 0 ? ` ${children} Children` : null}
-                {infants > 0 ? ` ${infants} Infant` : null}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* travellers sellection ---------------------------------------------------------- */}
-
-          {isTravel && (
-            <View style={[styles.travlOptnsWrap, {zIndex: 99}]}>
               <TouchableOpacity
-                onPress={() => {
-                  setIsTravel(!isTravel);
-                }}
-                style={styles.closeButton}>
-                <Image source={cross} style={styles.closeIcon} />
+                onPress={() => handleReverseLocations(index)}
+                style={styles.reverseBtn}>
+                <Image style={styles.reverseIcon} source={icon.exchange} />
               </TouchableOpacity>
 
-              <View style={styles.travelContWrap}>
-                <View style={{backgroundColor: 'transparent'}}>
-                  <Text style={styles.travelHdTxt}>Adults</Text>
-                  <Text style={styles.travelSubHdTxt}>Aged 12+ years</Text>
-                </View>
+              <View style={styles.right}>
+                <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
+                  Destination
+                </Text>
 
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (adults <= 1) {
-                        setAdults(1);
-                      } else {
-                        setAdults(adults - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {adults}
+                <TouchableOpacity
+                  onPress={() => {
+                    setMultiCityHandler({
+                      ...multiCityHandler,
+                      showSearchConMultiCity: true,
+                      currentIndex: index,
+                    });
+                  }}
+                  style={styles.enterLocBtn}>
+                  <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
+                    {item?.destination.length > 0
+                      ? item.destination
+                      : 'Enter Location'}
                   </Text>
+                </TouchableOpacity>
 
-                  <TouchableOpacity
-                    onPress={() => {
-                      setAdults(adults + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.travelContWrap}>
-                <View>
-                  <Text style={styles.travelHdTxt}>Children</Text>
-                  <Text style={styles.travelSubHdTxt}>Aged 2-12 years</Text>
-                </View>
-
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (children <= 0) {
-                        setChildren(0);
-                      } else {
-                        setChildren(children - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {children}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setChildren(children + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.travelContWrap}>
-                <View>
-                  <Text style={styles.travelHdTxt}>Infants</Text>
-                  <Text style={styles.travelSubHdTxt}>Bellow 2 years</Text>
-                </View>
-
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (infants <= 0) {
-                        setInfants(0);
-                      } else {
-                        setInfants(infants - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {infants}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setInfants(infants + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
+                <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
+                  Destination
+                </Text>
               </View>
             </View>
-          )}
 
-          <View style={styles.classCon}>
-            <View style={styles.classChildCon}>
-              <Text style={styles.fromTxt}>{'Class'}</Text>
-              <Image style={styles.imgCls} source={icon.rightArrow} />
-            </View>
+            <View style={styles.horizontalLine} />
 
-            <TouchableOpacity
-              onPress={() => {
-                setIsClass(!isClass);
-                setIsTravel(false);
-              }}
-              style={[styles.travellersBtn]}>
-              <Text style={[styles.enterLocTxt]}>{passengerClass}</Text>
-            </TouchableOpacity>
-          </View>
+            {/* middle selection row */}
+            <View
+              style={{
+                paddingTop: 5,
+                alignItems: 'flex-start',
+              }}>
+              <Text style={styles.fromTxt}>Depart</Text>
 
-          {dest === 'opt2'
-            ? isClass && (
-                <View style={styles.classOptnsWrap}>
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrapActive}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxtActive}>1 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>2 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>3 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>4 Room</Text>
-                  </TouchableOpacity>
-                </View>
-              )
-            : isClass && (
-                <View style={styles.classOptnsWrap}>
-                  {[
-                    'Economy',
-                    'Premium Economy',
-                    'Business',
-                    'First Class',
-                  ].map(item => {
-                    return (
-                      <TouchableOpacity
-                        key={item}
-                        style={
-                          passengerClass == item
-                            ? styles.classOptnTxtWrapActive
-                            : styles.classOptnTxtWrap
-                        }
-                        onPress={() => {
-                          setIsClass(false);
-                          setPassengerClass(item);
-                        }}>
-                        <Text
-                          style={
-                            passengerClass == item
-                              ? styles.classOptnTxtActive
-                              : styles.classOptnTxt
-                          }>
-                          {item}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              )}
-        </View>
-      </View>
-
-      <View
-        style={[
-          styles.main,
-          {marginTop: _ms(20), borderRadius: 5, zIndex: -1},
-        ]}>
-        <Text style={styles.flightOneTxt}>Flight 2</Text>
-        {/* top selection row */}
-        <View style={styles.topWrap}>
-          <View style={styles.left}>
-            <Text style={styles.fromTxt}>From</Text>
-
-            <TouchableOpacity style={styles.enterLocBtn}>
-              <Text style={styles.enterLocTxt}>Enter Location</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.fromTxt}>Origin</Text>
-          </View>
-
-          <TouchableOpacity style={styles.reverseBtn}>
-            <Image style={styles.reverseIcon} source={icon.exchange} />
-          </TouchableOpacity>
-
-          <View style={styles.right}>
-            <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
-              Destination
-            </Text>
-
-            <TouchableOpacity style={styles.enterLocBtn}>
-              <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
-                Enter Location
-              </Text>
-            </TouchableOpacity>
-
-            <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
-              Destination
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.horizontalLine} />
-
-        {/* middle selection row */}
-        <View
-          style={{
-            paddingTop: 5,
-            alignItems: 'flex-start',
-          }}>
-          <Text style={styles.fromTxt}>Depart</Text>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('traveldate')}
-            style={styles.enterLocBtn}>
-            <Text style={styles.enterLocTxt}>Select Date</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.fromTxt}>Day</Text>
-        </View>
-
-        <View style={styles.horizontalLine} />
-
-        {/* bottom selection row */}
-        <View style={[styles.travellersAndClassCon]}>
-          <View style={styles.travellersCon}>
-            <Text style={styles.fromTxt}>Travellers</Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                setIsTravel2(!isTravel2);
-                setIsClass2(false);
-                // handleTravellersSellection();
-              }}
-              style={[styles.travellersBtn]}>
-              <Text
-                style={[
-                  styles.enterLocTxt,
-                  {},
-                  // {fontSize: children > 0 && infants > 0 ? _ms(14) : _ms(16)},
-                ]}>
-                {`${adults} Adult`}
-                {children > 0 ? ` ${children} Children` : null}
-                {infants > 0 ? ` ${infants} Infant` : null}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* travellers sellection ---------------------------------------------------------- */}
-
-          {isTravel2 && (
-            <View style={styles.travlOptnsWrap}>
               <TouchableOpacity
                 onPress={() => {
-                  setIsTravel2(!isTravel2);
+                  // navigation.navigate('traveldate');
+                  setMultiCityHandler({
+                    ...multiCityHandler,
+                    showCalenderConMultiCity: true,
+                    currentIndex: index,
+                  });
                 }}
-                style={styles.closeButton}>
-                <Image source={cross} style={styles.closeIcon} />
+                style={styles.enterLocBtn}>
+                <Text style={styles.enterLocTxt}>
+                  {item?.date ? item.date : 'Select Date'}
+                </Text>
               </TouchableOpacity>
 
-              <View style={styles.travelContWrap}>
-                <View style={{backgroundColor: 'transparent'}}>
-                  <Text style={styles.travelHdTxt}>Adults</Text>
-                  <Text style={styles.travelSubHdTxt}>Aged 12+ years</Text>
-                </View>
-
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (adults <= 1) {
-                        setAdults(1);
-                      } else {
-                        setAdults(adults - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {adults}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setAdults(adults + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.travelContWrap}>
-                <View>
-                  <Text style={styles.travelHdTxt}>Children</Text>
-                  <Text style={styles.travelSubHdTxt}>Aged 2-12 years</Text>
-                </View>
-
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (children <= 0) {
-                        setChildren(0);
-                      } else {
-                        setChildren(children - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {children}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setChildren(children + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.travelContWrap}>
-                <View>
-                  <Text style={styles.travelHdTxt}>Infants</Text>
-                  <Text style={styles.travelSubHdTxt}>Bellow 2 years</Text>
-                </View>
-
-                <View style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (infants <= 0) {
-                        setInfants(0);
-                      } else {
-                        setInfants(infants - 1);
-                      }
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={minus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-
-                  <Text numberOfLines={1} style={styles.btnTxt}>
-                    {infants}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setInfants(infants + 1);
-                    }}
-                    style={styles.minusButton}>
-                    <Image source={plus} style={styles.minusIconStyle} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          )}
-
-          <View style={styles.classCon}>
-            <View style={styles.classChildCon}>
-              <Text style={styles.fromTxt}>{'Class'}</Text>
-              <Image style={styles.imgCls} source={icon.rightArrow} />
+              <Text style={styles.fromTxt}>Day</Text>
             </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                setIsClass2(!isClass2);
-                setIsTravel2(false);
-              }}
-              style={[styles.travellersBtn]}>
-              <Text style={[styles.enterLocTxt]}>{passengerClass}</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.horizontalLine} />
 
-          {dest === 'opt2'
-            ? isClass2 && (
-                <View style={styles.classOptnsWrap}>
+            {/* bottom selection row */}
+            <View style={[styles.travellersAndClassCon]}>
+              <View style={styles.travellersCon}>
+                <Text style={styles.fromTxt}>Travellers</Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsTravel(!isTravel);
+                    setIsClass(false);
+                    // handleTravellersSellection();
+                  }}
+                  style={[styles.travellersBtn]}>
+                  <Text
+                    style={[
+                      styles.enterLocTxt,
+                      {},
+                      // {fontSize: children > 0 && infants > 0 ? _ms(14) : _ms(16)},
+                    ]}>
+                    {`${adults} Adult`}
+                    {children > 0 ? ` ${children} Children` : null}
+                    {infants > 0 ? ` ${infants} Infant` : null}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* travellers sellection ---------------------------------------------------------- */}
+
+              {isTravel && (
+                <View style={[styles.travlOptnsWrap, {zIndex: 99}]}>
                   <TouchableOpacity
-                    style={styles.classOptnTxtWrapActive}
-                    onPress={() => setIsClass2(false)}>
-                    <Text style={styles.classOptnTxtActive}>1 Room</Text>
+                    onPress={() => {
+                      setIsTravel(!isTravel);
+                    }}
+                    style={styles.closeButton}>
+                    <Image source={cross} style={styles.closeIcon} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>2 Room</Text>
-                  </TouchableOpacity>
+                  <View style={styles.travelContWrap}>
+                    <View style={{backgroundColor: 'transparent'}}>
+                      <Text style={styles.travelHdTxt}>Adults</Text>
+                      <Text style={styles.travelSubHdTxt}>Aged 12+ years</Text>
+                    </View>
 
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>3 Room</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.classOptnTxtWrap}
-                    onPress={() => setIsClass(false)}>
-                    <Text style={styles.classOptnTxt}>4 Room</Text>
-                  </TouchableOpacity>
-                </View>
-              )
-            : isClass2 && (
-                <View style={styles.classOptnsWrap}>
-                  {[
-                    'Economy',
-                    'Premium Economy',
-                    'Business',
-                    'First Class',
-                  ].map(item => {
-                    return (
+                    <View style={styles.btn}>
                       <TouchableOpacity
-                        key={item}
-                        style={
-                          passengerClass == item
-                            ? styles.classOptnTxtWrapActive
-                            : styles.classOptnTxtWrap
-                        }
                         onPress={() => {
-                          setIsClass2(false);
-                          setPassengerClass(item);
-                        }}>
-                        <Text
-                          style={
-                            passengerClass == item
-                              ? styles.classOptnTxtActive
-                              : styles.classOptnTxt
-                          }>
-                          {item}
-                        </Text>
+                          if (adults <= 1) {
+                            setAdults(1);
+                          } else {
+                            setAdults(adults - 1);
+                          }
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={minus} style={styles.minusIconStyle} />
                       </TouchableOpacity>
-                    );
-                  })}
+
+                      <Text numberOfLines={1} style={styles.btnTxt}>
+                        {adults}
+                      </Text>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          setAdults(adults + 1);
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={plus} style={styles.minusIconStyle} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={styles.travelContWrap}>
+                    <View>
+                      <Text style={styles.travelHdTxt}>Children</Text>
+                      <Text style={styles.travelSubHdTxt}>Aged 2-12 years</Text>
+                    </View>
+
+                    <View style={styles.btn}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (children <= 0) {
+                            setChildren(0);
+                          } else {
+                            setChildren(children - 1);
+                          }
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={minus} style={styles.minusIconStyle} />
+                      </TouchableOpacity>
+
+                      <Text numberOfLines={1} style={styles.btnTxt}>
+                        {children}
+                      </Text>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          setChildren(children + 1);
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={plus} style={styles.minusIconStyle} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={styles.travelContWrap}>
+                    <View>
+                      <Text style={styles.travelHdTxt}>Infants</Text>
+                      <Text style={styles.travelSubHdTxt}>Bellow 2 years</Text>
+                    </View>
+
+                    <View style={styles.btn}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (infants <= 0) {
+                            setInfants(0);
+                          } else {
+                            setInfants(infants - 1);
+                          }
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={minus} style={styles.minusIconStyle} />
+                      </TouchableOpacity>
+
+                      <Text numberOfLines={1} style={styles.btnTxt}>
+                        {infants}
+                      </Text>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          setInfants(infants + 1);
+                        }}
+                        style={styles.minusButton}>
+                        <Image source={plus} style={styles.minusIconStyle} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
               )}
+
+              <View style={styles.classCon}>
+                <View style={styles.classChildCon}>
+                  <Text style={styles.fromTxt}>{'Class'}</Text>
+                  <Image style={styles.imgCls} source={icon.rightArrow} />
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsClass(!isClass);
+                    setIsTravel(false);
+                  }}
+                  style={[styles.travellersBtn]}>
+                  <Text style={[styles.enterLocTxt]}>{passengerClass}</Text>
+                </TouchableOpacity>
+              </View>
+
+              {dest === 'opt2'
+                ? isClass && (
+                    <View style={styles.classOptnsWrap}>
+                      <TouchableOpacity
+                        style={styles.classOptnTxtWrapActive}
+                        onPress={() => setIsClass(false)}>
+                        <Text style={styles.classOptnTxtActive}>1 Room</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.classOptnTxtWrap}
+                        onPress={() => setIsClass(false)}>
+                        <Text style={styles.classOptnTxt}>2 Room</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.classOptnTxtWrap}
+                        onPress={() => setIsClass(false)}>
+                        <Text style={styles.classOptnTxt}>3 Room</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.classOptnTxtWrap}
+                        onPress={() => setIsClass(false)}>
+                        <Text style={styles.classOptnTxt}>4 Room</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )
+                : isClass && (
+                    <View style={styles.classOptnsWrap}>
+                      {[
+                        'Economy',
+                        'Premium Economy',
+                        'Business',
+                        'First Class',
+                      ].map(item => {
+                        return (
+                          <TouchableOpacity
+                            key={item}
+                            style={
+                              passengerClass == item
+                                ? styles.classOptnTxtWrapActive
+                                : styles.classOptnTxtWrap
+                            }
+                            onPress={() => {
+                              setIsClass(false);
+                              setPassengerClass(item);
+                            }}>
+                            <Text
+                              style={
+                                passengerClass == item
+                                  ? styles.classOptnTxtActive
+                                  : styles.classOptnTxt
+                              }>
+                              {item}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  )}
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
+      ))}
+    </>
   );
 };
 
@@ -597,15 +382,17 @@ const styles = StyleSheet.create({
     paddingVertical: _vs(5),
     paddingTop: _vs(20),
     paddingHorizontal: _ms(10),
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
+    borderRadius: 5,
+
+    marginBottom: _ms(20),
   },
 
   flightOneTxt: {
     fontFamily: _fonts.londonBetween,
     color: b3,
     fontSize: _ms(14),
-    marginBottom: _ms(10),
+    // marginBottom: _ms(10),
+    // backgroundColor: 'red',
   },
 
   topWrap: {
@@ -616,7 +403,7 @@ const styles = StyleSheet.create({
   fromTxt: {
     color: b3,
     fontFamily: _fonts.nunitoSansRegular,
-    fontSize: _ms(12),
+    fontSize: _ms(11),
   },
 
   left: {
@@ -626,13 +413,13 @@ const styles = StyleSheet.create({
   enterLocBtn: {
     // backgroundColor: 'red',
     paddingVertical: _vs(5),
-    paddingHorizontal: _s(2),
   },
 
   enterLocTxt: {
     color: '#232020',
-    fontSize: _ms(16),
+    fontSize: _ms(14),
     fontFamily: _fonts.nunitoSansSemiBold,
+    marginVertical: _ms(5),
   },
 
   reverseBtn: {
@@ -662,7 +449,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  // ? -----
+  //  -----
 
   travellersAndClassCon: {
     flexDirection: 'row',
@@ -840,6 +627,35 @@ const styles = StyleSheet.create({
   closeIcon: {
     width: _s(15),
     height: _s(15),
+    resizeMode: 'contain',
+    tintColor: blue,
+  },
+
+  // delete flight button
+
+  deleteflightCon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: _ms(10),
+  },
+
+  deleteflightBtn: {
+    backgroundColor: white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 2,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: blue,
+    elevation: 5,
+    shadowColor: black,
+  },
+
+  deleteIcon: {
+    width: _ms(12),
+    height: _ms(12),
     resizeMode: 'contain',
     tintColor: blue,
   },

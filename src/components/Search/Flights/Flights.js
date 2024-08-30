@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -18,17 +19,23 @@ import MultiCity from './MultiCity';
 import DealItem from './DealItem';
 import icon from '../../../config/IconAssets';
 import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
-import BgGradient from '../../../utility/BgGradient';
+
+const {width} = Dimensions.get('window');
 
 const Flights = ({
   navigation,
   data,
-  width,
-  height,
+  // one way
   oneWayHandler,
   setOneWayHandler,
+  // round trip
   roundTripHandler,
   setRoundTripHandler,
+  // multi city
+  multiCityHandler,
+  setMultiCityHandler,
+  multiCityFlights,
+  setMultiCityFlights,
 }) => {
   const [selectedMidMenu, setSelectedMidMenu] = useState('o');
   const [shouldAnimate, setShouldAnimate] = useState(false);
@@ -75,9 +82,30 @@ const Flights = ({
     {
       key: 'm',
       Component: MultiCity,
-      props: {navigation},
+      props: {
+        navigation,
+        multiCityHandler,
+        setMultiCityHandler,
+        multiCityFlights,
+        setMultiCityFlights,
+      },
     },
   ];
+
+  // Handle adding new flight
+  const addFlight = index => {
+    setMultiCityFlights([
+      ...multiCityFlights,
+      {
+        origin: '',
+        destination: '',
+        date: '',
+        travellers: 1,
+        flightClass: 'Economy',
+        currentIndex: 0,
+      },
+    ]);
+  };
 
   return (
     <>
@@ -85,6 +113,7 @@ const Flights = ({
         style={{
           flex: 1,
         }}
+        contentContainerStyle={{paddingBottom: _ms(60)}}
         showsVerticalScrollIndicator={false}>
         {/* {selectedMidMenu === 'm' && (
           <BgGradient width={width} height={height + height} />
@@ -147,32 +176,33 @@ const Flights = ({
                   {selectedMidMenu === key && (
                     <MotiView
                       style={{flex: 1}}
-                      from={{
-                        opacity:
-                          selectedMidMenu == 'm'
-                            ? 0.97
-                            : shouldAnimate
-                            ? 0.6
-                            : 1,
-                        scale:
-                          selectedMidMenu == 'm'
-                            ? 1.01
-                            : shouldAnimate
-                            ? 1.01
-                            : 1,
-                        // backgroundColor: white,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                        backgroundColor: 'transparent',
-                      }}
-                      transition={{
-                        duration: 100,
-                        type: 'timing',
-                        // delay: shouldAnimate ? 100 : 0,
-                        delay: 0,
-                      }}
+                      // from={{
+                      //   opacity:
+                      //     selectedMidMenu == 'm'
+                      //       ? 0.98
+                      //       : shouldAnimate
+                      //       ? 0.6
+                      //       : 1,
+                      //   scale:
+                      //     selectedMidMenu == 'm'
+                      //       ? 1.003
+                      //       : shouldAnimate
+                      //       ? 1.004
+                      //       : 1,
+                      //   // backgroundColor: white,
+                      // }}
+                      // animate={{
+                      //   opacity: 1,
+                      //   scale: 1,
+                      //   backgroundColor: 'transparent',
+                      // }}
+                      // transition={{
+                      //   duration: 300,
+                      //   type: 'timing',
+                      //   // delay: shouldAnimate ? 100 : 0,
+                      //   delay: 0,
+                      // }}
+                      // --------------- ??
                       // exit={{
                       //   opacity: 0,
                       //   scale: 0,
@@ -197,26 +227,25 @@ const Flights = ({
                   alignSelf: 'center',
                   marginTop: _vs(20),
                 }}>
-                <TouchableOpacity style={styles.addFlightBtn}>
+                <TouchableOpacity
+                  onPress={() => {
+                    addFlight();
+                  }}
+                  style={styles.addFlightBtn}>
                   <Text style={styles.addFlightTxt}>Add Flight</Text>
                 </TouchableOpacity>
               </View>
             )}
 
             {/* search button */}
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('flightsearch', {});
-              }}
-              activeOpacity={0.5}
-              style={{
-                alignSelf: 'center',
-                // backgroundColor: 'red',
-                marginTop: _vs(20),
-                zIndex: isTravel || isClass ? -1 : 1,
-              }}>
-              <SearchButton navigation={navigation} name="Search" />
-            </TouchableOpacity>
+
+            <View style={{zIndex: 1}}>
+              <SearchButton
+                navigation={navigation}
+                name="Search"
+                navigationScreen="flightsearch"
+              />
+            </View>
 
             {/* prifile option */}
 
@@ -239,7 +268,12 @@ const Flights = ({
             <View
               style={[
                 styles.profileButtonContainer,
-                {gap: _s(5), paddingHorizontal: _s(5), marginBottom: _vs(20)},
+                {
+                  gap: _s(5),
+                  paddingHorizontal: _s(5),
+                  marginBottom: _vs(20),
+                  borderRadius: 0,
+                },
               ]}>
               <Image style={styles.profileIconStyle} source={icon.proimg} />
 
@@ -291,7 +325,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'gray',
     backgroundColor: white,
     overflow: 'scroll',
-    gap: _s(12),
+    gap: _s(8),
     padding: 5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
@@ -316,9 +350,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: _vs(5),
+    paddingVertical: _ms(4),
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: 'transparent',
   },
 
@@ -328,12 +362,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#21B4E2',
   },
 
   mmBtnTxtActive: {
-    color: 'rgba(33, 180, 226, 1)',
+    color: blue,
+    // color: 'rgba(33, 180, 226, 1)',
     fontFamily: _fonts.nunitoSansSemiBold,
     fontSize: _ms(14),
   },

@@ -5,23 +5,21 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
+  TouchableHighlight,
 } from 'react-native';
 import React, {useState} from 'react';
-import {white, b1, b3, black, blue} from '../../../config/colors';
-import icon from '../../../config/IconAssets';
 import SearchButton from '../../SearchButton';
-import RentalCars from './RentalCars';
-import AirportTransport from './AirportTransport';
-import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
+import {b1, b2, b3, black, blue, white} from '../../../config/colors';
+import icon from '../../../config/IconAssets';
+import commonStyles from '../../../assets/css/CommonFonts';
+import HpSearchComp from './HpSearchComp';
+import HpOffers from './HpOffers';
+import {hpData} from '../../../config/StaticVars';
+import {_fonts, _ms, _s} from '../../utils/Responsive';
 
-const Cars = ({navigation}) => {
-  const [selectedMidMenu, setSelectedMidMenu] = useState('rc');
-
-  const [isTravel, setIsTravel] = useState(false);
-
-  const handleTravellers = childData => {
-    setIsTravel(!isTravel);
-  };
+const HolidayPackages = ({navigation}) => {
+  const [selectedTopMenu, setSelectedTopMenu] = useState('h&c');
 
   return (
     <ScrollView
@@ -30,20 +28,21 @@ const Cars = ({navigation}) => {
       contentContainerStyle={{paddingBottom: _ms(60)}}>
       {/* trip option nav bar */}
       <View style={styles.mainMenuWrap}>
+        {/* trip option top nav bar */}
         <View style={styles.mmContWrap}>
           {[
-            {key: 'rc', label: 'Rental Cars'},
-            {key: 'at', label: 'Airport Transportation'},
+            {key: 'f&h', label: 'Flight + Hotel'},
+            {key: 'h&c', label: 'Hotel + Car'},
           ].map(item => (
             <TouchableOpacity
               key={item.key}
               style={
-                selectedMidMenu === item.key ? styles.mmBtnActive : styles.mmBtn
+                selectedTopMenu === item.key ? styles.mmBtnActive : styles.mmBtn
               }
-              onPress={() => setSelectedMidMenu(item.key)}>
+              onPress={() => setSelectedTopMenu(item.key)}>
               <Text
                 style={
-                  selectedMidMenu === item.key
+                  selectedTopMenu === item.key
                     ? styles.mmBtnTxtActive
                     : styles.mmBtnTxt
                 }>
@@ -53,22 +52,22 @@ const Cars = ({navigation}) => {
           ))}
         </View>
 
-        {/* trip option content */}
         <>
-          {selectedMidMenu === 'rc' && (
-            <RentalCars
-              navigation={navigation}
-              handleTravellers={handleTravellers}
-              isTravel={isTravel}
-            />
+          {selectedTopMenu == 'h&c' && (
+            <View>
+              <TouchableOpacity style={styles.allCarSizeBtn}>
+                <Text
+                  style={[commonStyles.ns400, {fontSize: _ms(14), color: b3}]}>
+                  All Car Sizes
+                </Text>
+                <Image style={styles.downArrowIcon} source={icon.rightArrow} />
+              </TouchableOpacity>
+            </View>
           )}
-          {selectedMidMenu === 'at' && (
-            <AirportTransport
-              navigation={navigation}
-              handleTravellers={handleTravellers}
-              isTravel={isTravel}
-            />
-          )}
+
+          {/* trip option content */}
+
+          <HpSearchComp navigation={navigation} />
         </>
       </View>
 
@@ -76,7 +75,7 @@ const Cars = ({navigation}) => {
 
       <SearchButton
         navigation={navigation}
-        navigationScreen={'carsearch'}
+        navigationScreen={'hpsearch'}
         name="Search"
       />
 
@@ -102,7 +101,7 @@ const Cars = ({navigation}) => {
           {
             gap: _s(5),
             paddingHorizontal: _s(5),
-            marginBottom: _vs(20),
+            marginBottom: _ms(20),
             borderRadius: 0,
           },
         ]}>
@@ -115,15 +114,52 @@ const Cars = ({navigation}) => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.callIconCon}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('hpassist')}
+          style={styles.callIconCon}>
           <Image style={styles.callIconStyle} source={icon.mobile} />
         </TouchableOpacity>
+      </View>
+
+      {/* deals option */}
+      <View style={styles.dealWrap}>
+        <Text style={styles.dealHeadTxt}>
+          International Holiday Packages On Sale
+        </Text>
+
+        <Text
+          style={[
+            commonStyles.ns400,
+            {color: b3, textAlign: 'center', marginTop: _ms(15)},
+          ]}>
+          Get Flat 45% Off! Use code: 10CAHOLIDAY
+        </Text>
+
+        <View style={styles.dealContWrap}>
+          {hpData.map((item, i) => (
+            <View key={i}>
+              <HpOffers data={item} />
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.wrapper}>
+          {/* view all btn */}
+          <TouchableHighlight
+            onPress={() => Alert.alert('TouchableHighlight', 'Button Pressed!')}
+            underlayColor={blue}
+            style={styles.viewall}>
+            <Text style={[commonStyles.lbB1, {fontSize: _ms(16), color: blue}]}>
+              View All
+            </Text>
+          </TouchableHighlight>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
-export default Cars;
+export default HolidayPackages;
 
 const styles = StyleSheet.create({
   mainMenuWrap: {
@@ -170,6 +206,12 @@ const styles = StyleSheet.create({
     borderColor: '#21B4E2',
   },
 
+  mmBtnTxt: {
+    color: b3,
+    fontFamily: _fonts.nunitoSansSemiBold,
+    fontSize: _ms(14),
+  },
+
   mmBtnTxtActive: {
     color: blue,
     // color: 'rgba(33, 180, 226, 1)',
@@ -177,21 +219,34 @@ const styles = StyleSheet.create({
     fontSize: _ms(14),
   },
 
-  mmBtnTxt: {
-    color: b3,
-    fontFamily: _fonts.nunitoSansSemiBold,
-    fontSize: _ms(14),
+  allCarSizeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: _ms(5),
+    alignSelf: 'flex-start',
+    marginLeft: _ms(5),
+    paddingVertical: _ms(5),
   },
+
+  downArrowIcon: {
+    width: 11,
+    height: 11,
+    tintColor: b3,
+    transform: [{rotate: '90deg'}],
+    top: _ms(2),
+  },
+
+  // ??
 
   profileButtonContainer: {
     marginHorizontal: _s(10),
-    marginTop: _vs(15),
+    marginTop: _ms(15),
     backgroundColor: white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 4,
-    paddingVertical: _vs(9),
+    paddingVertical: _ms(9),
     paddingHorizontal: _s(8),
     elevation: 10,
     shadowColor: 'gray',
@@ -240,7 +295,59 @@ const styles = StyleSheet.create({
   },
 
   callIconStyle: {
-    width: _s(20),
-    height: _s(20),
+    width: _ms(20),
+    height: _ms(20),
+  },
+
+  //
+
+  dealWrap: {
+    backgroundColor: white,
+    flex: 1,
+    marginTop: _ms(10),
+    marginHorizontal: _ms(5),
+    borderRadius: 10,
+    elevation: 20,
+    shadowColor: black,
+  },
+
+  dealHeadTxt: {
+    fontFamily: _fonts.nunitoSansBold,
+    fontSize: _ms(16),
+    color: b1,
+    textAlign: 'center',
+    marginTop: _ms(20),
+  },
+
+  dealContWrap: {
+    marginTop: _ms(15),
+    marginHorizontal: _ms(10),
+    flex: 1,
+    rowGap: 20,
+  },
+
+  wrapper: {
+    marginHorizontal: _ms(18),
+    marginVertical: _ms(15),
+    backgroundColor: white,
+    alignItems: 'center',
+  },
+
+  detailsTxt: {
+    fontFamily: _fonts.nunitoSansRegular,
+    color: b2,
+    fontSize: _ms(11),
+    lineHeight: _ms(18),
+  },
+
+  viewall: {
+    borderWidth: 2,
+    borderColor: blue,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _ms(7),
+    width: '85%',
+    marginVertical: _ms(10),
   },
 });

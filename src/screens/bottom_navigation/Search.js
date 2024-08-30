@@ -1,38 +1,31 @@
 import {
-  Alert,
   Dimensions,
-  FlatList,
-  Image,
   Modal,
-  Pressable,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
+import {AnimatePresence, MotiView} from 'moti';
+
 import BgGradient from '../../utility/BgGradient';
 import Header from '../../components/Header';
-import {b1, b2, b3, black, white} from '../../config/colors';
-import Flights from '../../components/Search/Flights/Flights';
-import Hotels from '../../components/Search/Hotels/Hotels';
-import Cars from '../../components/Search/Cars/Cars';
-import GroupTickets from '../../components/Search/GroupTickets/GroupTickets';
-import FlightAndHotels from '../../components/Search/FlightHotels/FlightAndHotels';
-import HolidayPackages from '../../components/Search/HolidayPackages/HolidayPackages';
-import {AnimatePresence, MotiView} from 'moti';
-import {_fonts, _ms, _s, _vs} from '../../components/utils/Responsive';
-import {cross, next, plane, search2} from '../../config/IconAssets';
-import LinearGradient from 'react-native-linear-gradient';
+import {white} from '../../config/colors';
+import Flights from '../../components/search/flights/Flights';
+import Hotels from '../../components/search/hotels/Hotels';
+import Cars from '../../components/search/cars/Cars';
+import GroupTickets from '../../components/search/group_tickets/GroupTickets';
+import FlightAndHotels from '../../components/search/flight_hotels/FlightAndHotels';
+import HolidayPackages from '../../components/search/holiday_package/HolidayPackages';
+import {_ms, _s, _vs} from '../../components/utils/Responsive';
 import useDebounce from '../../components/sub_components/Debounce';
-import {CalendarList} from 'react-native-calendars';
-import {getCurrentDate2, todaydate} from '../../config/CurrentDate';
 import AirportSearchCom from '../../components/sub_components/onewaySubCom/AirportSearchCom';
 import SelectDateCom from '../../components/sub_components/onewaySubCom/SelectDateCom';
 import ReturnDateCom from '../../components/sub_components/roundTripSubCom/ReturnDateCom';
+import MultiCityDate from '../../components/sub_components/multiCitySubCom/MultiCityDate';
+import AirportSearchMultiCity from '../../components/sub_components/multiCitySubCom/AirportSearchMultiCity';
 
 const {width, height} = Dimensions.get('window');
 
@@ -47,6 +40,11 @@ const Search = ({navigation}) => {
     origin: '',
     destination: '',
     date: '',
+    //  travellers
+    adults: 1,
+    childrens: 0,
+    infants: 0,
+    flightClass: 'Economy',
   });
 
   const [roundTripHandler, setRoundTripHandler] = useState({
@@ -54,9 +52,31 @@ const Search = ({navigation}) => {
     returnDateRoundTrip: '',
   });
 
-  // console.log('---->>', oneWayHandler.origin);
-  // console.log('---->>', oneWayHandler.destination);
-  // console.log('---->>', oneWayHandler.date);
+  const [multiCityHandler, setMultiCityHandler] = useState({
+    showCalenderConMultiCity: false,
+    showSearchConMultiCity: false,
+    currentIndex: 0,
+    inputFieldName: null,
+  });
+
+  const [multiCityFlights, setMultiCityFlights] = useState([
+    {
+      origin: '',
+      destination: '',
+      date: '',
+      travellers: 1,
+      flightClass: 'Economy',
+      currentIndex: 0,
+    },
+    {
+      origin: '',
+      destination: '',
+      date: '',
+      travellers: 1,
+      flightClass: 'Economy',
+      currentIndex: 1,
+    },
+  ]);
 
   const filteredAirports = [
     'Los Angeles International Airport',
@@ -76,8 +96,9 @@ const Search = ({navigation}) => {
     console.log('Searching for:', query);
   };
 
-  const debouncedSearch = useDebounce(fetchResults, 500);
+  const debouncedSearch = useDebounce(fetchResults, 500); // its imported from another file
 
+  // oneway and round trip search func
   const handleAirportSearchInput = (search, type) => {
     // console.log(search, type);
 
@@ -96,25 +117,44 @@ const Search = ({navigation}) => {
   };
 
   //  rendering comp ---> ✌
-  const menuItems = [
+  const subComs = [
     {
       key: 'f',
       Component: Flights,
       props: {
         navigation,
         data,
-        width,
-        height,
+        // oneway
         oneWayHandler,
         setOneWayHandler,
+        // round trip
         roundTripHandler,
         setRoundTripHandler,
+        // multi city
+        multiCityHandler,
+        setMultiCityHandler,
+        multiCityFlights,
+        setMultiCityFlights,
       },
     },
     {
       key: 'f&h',
       Component: FlightAndHotels,
-      props: {navigation, data},
+      props: {
+        navigation,
+        data,
+        // oneway
+        oneWayHandler,
+        setOneWayHandler,
+        // round trip
+        roundTripHandler,
+        setRoundTripHandler,
+        // multi city
+        multiCityHandler,
+        setMultiCityHandler,
+        multiCityFlights,
+        setMultiCityFlights,
+      },
     },
     {
       key: 'h',
@@ -134,15 +174,44 @@ const Search = ({navigation}) => {
     {
       key: 'gt',
       Component: GroupTickets,
-      props: {navigation, data, width, height},
+      props: {
+        navigation,
+        data,
+        width,
+        height,
+        // oneway
+        oneWayHandler,
+        setOneWayHandler,
+        // round trip
+        roundTripHandler,
+        setRoundTripHandler,
+        // multi city
+        multiCityHandler,
+        setMultiCityHandler,
+        multiCityFlights,
+        setMultiCityFlights,
+      },
     },
   ];
 
+  // handling dates
+  const handleMultiCityFlightsDates = value => {
+    const updatedFlights = multiCityFlights.map((flight, i) =>
+      i === multiCityHandler.currentIndex
+        ? {...flight, ['date']: value}
+        : flight,
+    );
+    setMultiCityFlights(updatedFlights);
+  };
+
+  // flights : multi city functios  ends here -- 🤞
+
+  // FLIGHT + HOTELS start here ----
+
   return (
     <SafeAreaView style={styles.parent}>
-      <BgGradient width={width} height={height * 0.74} />
+      <BgGradient width={width} height={'70%'} />
       <Header />
-
       {/* <StatusBar
         translucent={true}
         backgroundColor={oneWayHandler.showSearchCon ? white : 'transparent'}
@@ -150,7 +219,6 @@ const Search = ({navigation}) => {
           oneWayHandler.showSearchCon ? 'dark-content' : 'light-content'
         }
       /> */}
-
       <View style={styles.body}>
         {/* flight , flight + hotel, hotels, cares button */}
 
@@ -205,7 +273,7 @@ const Search = ({navigation}) => {
         </View>
 
         {/*  sub com / child com */}
-        {menuItems.map(({key, Component, props}) => (
+        {subComs.map(({key, Component, props}) => (
           <AnimatePresence key={key}>
             {selectedHMenu === key && (
               <MotiView
@@ -221,87 +289,134 @@ const Search = ({navigation}) => {
                   translateX: 0,
                 }}
                 transition={{
-                  duration: 300,
+                  duration: 350,
                   type: 'timing',
                   delay: shouldAnimate ? 100 : 0,
                 }}
-                exit={{
-                  opacity: 0,
-                  scale: 0,
-                  // translateX: -width,    // esko use karne pe transition ka duration badhana padega..
-                }}
-                exitTransition={{
-                  type: 'spring',
-                  duration: 0,
-                  delay: 0,
-                }}>
+
+                // exit={{
+                //   opacity: 0,
+                //   // scale: 0,
+                //   // translateX: -width,    // esko use karne pe transition ka duration badhana padega..
+                // }}
+
+                // exitTransition={{
+                //   type: 'spring',
+                //   duration: 0,
+                //   delay: 0,
+                // }}
+              >
                 <Component {...props} />
               </MotiView>
             )}
           </AnimatePresence>
         ))}
       </View>
-
       {/* flight sub com start here ------- */}
-
       {/* one way sub components start -- */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        hardwareAccelerated={true}
-        visible={oneWayHandler.showSearchCon}
-        onRequestClose={() => {
-          setOneWayHandler({...oneWayHandler, showSearchCon: false});
-        }}>
-        <>
-          <AirportSearchCom
+      <>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          hardwareAccelerated={true}
+          visible={oneWayHandler.showSearchCon}
+          onRequestClose={() => {
+            setOneWayHandler({...oneWayHandler, showSearchCon: false});
+          }}>
+          <>
+            <AirportSearchCom
+              oneWayHandler={oneWayHandler}
+              setOneWayHandler={setOneWayHandler}
+              handleAirportSearchInput={handleAirportSearchInput}
+              filteredAirports={filteredAirports}
+            />
+          </>
+        </Modal>
+
+        {/* date picker comp */}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          hardwareAccelerated={true}
+          visible={oneWayHandler.showCalenderCon}
+          onRequestClose={() => {
+            setOneWayHandler({...oneWayHandler, showCalenderCon: false});
+          }}>
+          <SelectDateCom
             oneWayHandler={oneWayHandler}
             setOneWayHandler={setOneWayHandler}
-            handleAirportSearchInput={handleAirportSearchInput}
+          />
+        </Modal>
+      </>
+      {/* one way sub components END ?? */}
+      {/* round trip sub components start -- */}
+      <>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          hardwareAccelerated={true}
+          // statusBarTranslucent
+          visible={roundTripHandler.showCalenderConRoundTrip}
+          onRequestClose={() => {
+            setRoundTripHandler({
+              ...roundTripHandler,
+              showCalenderConRoundTrip: false,
+            });
+          }}>
+          <ReturnDateCom
+            roundTripHandler={roundTripHandler}
+            setRoundTripHandler={setRoundTripHandler}
+          />
+        </Modal>
+      </>
+      {/* round trip sub components END ?? */}
+      {/* multi city sub components start -- */}
+
+      <>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          hardwareAccelerated={true}
+          visible={multiCityHandler.showCalenderConMultiCity}
+          onRequestClose={() => {
+            setMultiCityHandler({
+              ...multiCityHandler,
+              showCalenderConMultiCity: false,
+            });
+          }}>
+          <MultiCityDate
+            multiCityHandler={multiCityHandler}
+            setMultiCityHandler={setMultiCityHandler}
+            multiCityFlights={multiCityFlights}
+            setMultiCityFlights={setMultiCityFlights}
+            handleMultiCityFlightsDates={handleMultiCityFlightsDates}
+          />
+        </Modal>
+
+        {/*  search container */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          hardwareAccelerated={true}
+          visible={multiCityHandler.showSearchConMultiCity}
+          onRequestClose={() => {
+            setMultiCityHandler({
+              ...multiCityHandler,
+              showSearchConMultiCity: false,
+            });
+          }}>
+          <AirportSearchMultiCity
+            multiCityHandler={multiCityHandler}
+            setMultiCityHandler={setMultiCityHandler}
+            multiCityFlights={multiCityFlights}
+            setMultiCityFlights={setMultiCityFlights}
             filteredAirports={filteredAirports}
           />
-        </>
-      </Modal>
-
-      {/* date picker comp */}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        hardwareAccelerated={true}
-        visible={oneWayHandler.showCalenderCon}
-        onRequestClose={() => {
-          setOneWayHandler({...oneWayHandler, showCalenderCon: false});
-        }}>
-        <SelectDateCom
-          oneWayHandler={oneWayHandler}
-          setOneWayHandler={setOneWayHandler}
-        />
-      </Modal>
-
-      {/* one way sub components end == */}
-
-      {/* round trip sub components start -- */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        hardwareAccelerated={true}
-        // statusBarTranslucent
-        visible={roundTripHandler.showCalenderConRoundTrip}
-        onRequestClose={() => {
-          setRoundTripHandler({
-            ...roundTripHandler,
-            showCalenderConRoundTrip: false,
-          });
-        }}>
-        <ReturnDateCom
-          roundTripHandler={roundTripHandler}
-          setRoundTripHandler={setRoundTripHandler}
-        />
-      </Modal>
-      {/* round trip sub components start == */}
-
-      {/* flight sub com end here ======= */}
+        </Modal>
+      </>
+      {/* multi city sub components END ?? */}
+      {/* flight sub com END HERE ?????????? */}
     </SafeAreaView>
   );
 };

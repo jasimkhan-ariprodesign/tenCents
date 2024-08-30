@@ -6,7 +6,7 @@ import commonStyles from '../../../assets/css/CommonFonts';
 import { b1, blue, white } from '../../../config/colors';
 import icon from '../../../config/IconAssets';
 import image from '../../../config/ImageAssets';
-import HotelItem from '../Hotels/HotelItem';
+import HotelItem from '../hotels/HotelItem';
 
 const { width, height } = Dimensions.get("window");
 

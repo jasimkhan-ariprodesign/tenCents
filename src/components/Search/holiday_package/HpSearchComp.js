@@ -1,37 +1,28 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
-
-import icon from '../../../config/IconAssets';
 import {b1, b3, black, blue, w1, white} from '../../../config/colors';
+import icon from '../../../config/IconAssets';
 import {_fonts, _ms, _s, _vs} from '../../utils/Responsive';
+import {formatDate} from '../../../config/CurrentDate';
 
-const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
-  // all data's are wrong and does not relate to this compo
+const HpSearchComp = ({navigation}) => {
+  const [isClass, setIsClass] = useState(false);
+  const [isTravel, setIsTravel] = useState(false);
 
   return (
     <View style={styles.main}>
-      {/*  */}
-
-      <View style={styles.topWrap}>
-        <TouchableOpacity
-          style={[
-            styles.allCarRentalBtn,
-            {marginLeft: _ms(-5), marginRight: _ms(15)},
-          ]}>
-          <Text style={styles.allCarRentalTxt}>All Car Rental Companies</Text>
-          <Image style={styles.downArrow} source={icon.rightArrow} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.allCarRentalBtn}>
-          <Text style={styles.allCarRentalTxt}>All Car Sizes</Text>
-          <Image style={styles.downArrow} source={icon.rightArrow} />
-        </TouchableOpacity>
-      </View>
-
       {/* top selection row */}
       <View style={styles.topWrap}>
         <View style={styles.left}>
-          <Text style={styles.fromTxt}>PickUP</Text>
+          <Text style={styles.fromTxt}>Destination</Text>
 
           <TouchableOpacity
             onPress={() => {
@@ -41,23 +32,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
             <Text style={styles.enterLocTxt}>Enter Location</Text>
           </TouchableOpacity>
 
-          <Text style={styles.fromTxt}>PickUP</Text>
-        </View>
-
-        <View style={styles.right}>
-          <Text style={[styles.fromTxt, {textAlign: 'right'}]}>Drop-Off</Text>
-
-          <TouchableOpacity
-            onPress={() => {
-              //
-            }}
-            style={styles.enterLocBtn}>
-            <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
-              Enter Location
-            </Text>
-          </TouchableOpacity>
-
-          <Text style={[styles.fromTxt, {textAlign: 'right'}]}>Drop-Off</Text>
+          <Text style={styles.fromTxt}>Destination</Text>
         </View>
       </View>
 
@@ -66,7 +41,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
       {/* middle selection row */}
       <View style={[styles.topWrap, {paddingTop: 5}]}>
         <View style={styles.left}>
-          <Text style={styles.fromTxt}>PickUP Date</Text>
+          <Text style={styles.fromTxt}>Depart Date</Text>
 
           <TouchableOpacity
             onPress={() => {
@@ -75,24 +50,26 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
             <Text style={styles.enterLocTxt}>Select Date</Text>
           </TouchableOpacity>
 
-          <Text style={styles.fromTxt}>Time</Text>
+          <Text style={styles.fromTxt}>Day</Text>
         </View>
 
         <View style={styles.right}>
           <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
-            Drop-Off Date
+            Return Date
           </Text>
 
           <TouchableOpacity
             onPress={() => {
-              // navigation.navigate('traveldate');
+              //
             }}>
             <Text style={[styles.enterLocTxt, {textAlign: 'right'}]}>
               Select Date
             </Text>
           </TouchableOpacity>
 
-          <Text style={[styles.fromTxt, {textAlign: 'right'}]}>Time</Text>
+          <Text style={[styles.fromTxt, {textAlign: 'right'}]}>
+            Book Return
+          </Text>
         </View>
       </View>
 
@@ -106,7 +83,8 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
 
           <TouchableOpacity
             onPress={() => {
-              handleTravellers();
+              setIsTravel(!isTravel);
+              setIsClass(false);
             }}
             style={styles.travellersBtn}>
             <Text style={[styles.enterLocTxt]}>1 Adult</Text>
@@ -119,7 +97,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
           <View style={styles.travlOptnsWrap}>
             <TouchableOpacity
               onPress={() => {
-                handleTravellers();
+                setIsTravel(!isTravel);
               }}
               style={styles.closeButton}>
               <Image source={icon.cross} style={styles.closeIcon} />
@@ -141,7 +119,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  0
+                  {/* {oneWayHandler?.adults} */}0
                 </Text>
 
                 <TouchableOpacity
@@ -170,7 +148,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  0
+                  {/* {oneWayHandler?.childrens} */}0
                 </Text>
 
                 <TouchableOpacity
@@ -199,7 +177,7 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
                 </TouchableOpacity>
 
                 <Text numberOfLines={1} style={styles.btnTxt}>
-                  0
+                  {/* {oneWayHandler?.infants} */}0
                 </Text>
 
                 <TouchableOpacity
@@ -213,42 +191,96 @@ const AirportTransport = ({navigation, handleTravellers, isTravel}) => {
             </View>
           </View>
         )}
+
+        <View style={styles.classCon}>
+          <View style={styles.classChildCon}>
+            <Text style={styles.fromTxt}>{'Room'}</Text>
+            <Image style={styles.imgCls} source={icon.rightArrow} />
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              setIsClass(!isClass);
+              setIsTravel(false);
+            }}
+            style={styles.travellersBtn}>
+            <Text style={styles.enterLocTxt}>
+              {/* {oneWayHandler?.flightClass} */}1 Room
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* room sellection ---------------------------------------------------------- */}
+
+        {isClass && (
+          <View style={styles.classOptnsWrap}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsClass(!isClass);
+                setIsTravel(false);
+              }}
+              style={styles.closeButton}>
+              <Image source={icon.cross} style={styles.closeIcon} />
+            </TouchableOpacity>
+            <Text style={styles.roomsTxt}>Rooms</Text>
+            <View style={styles.buttonsCon}>
+              <TouchableHighlight
+                underlayColor={blue}
+                style={styles.classOptnTxtWrap}
+                onPress={() => {
+                  //   handleClassType();
+                }}>
+                <Image source={icon.minus} style={styles.minusIconStyle} />
+              </TouchableHighlight>
+
+              <Text numberOfLines={1} style={styles.btnTxt}>
+                {/* {rooms} */}0
+              </Text>
+
+              <TouchableHighlight
+                underlayColor={blue}
+                style={styles.classOptnTxtWrap}
+                onPress={() => {
+                  //   handleClassType();
+                }}>
+                <Image source={icon.plus} style={styles.minusIconStyle} />
+              </TouchableHighlight>
+            </View>
+          </View>
+        )}
+      </View>
+
+      {/* search hotel */}
+
+      <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: _ms(10)}}>
+        <View style={styles.preferredAirLineCon}>
+          <Image style={styles.searchIconStyle} source={icon.search} />
+
+          <TextInput
+            placeholder="Hotel Name"
+            placeholderTextColor={b3}
+            style={styles.searchPreferredAirLineInput}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.hotelRatingBtn}>
+          <Text style={styles.hotelRatingTxt}>Hotel Rating</Text>
+          <Image style={styles.downArrowIcon} source={icon.rightArrow} />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default AirportTransport;
+export default HpSearchComp;
 
 const styles = StyleSheet.create({
   main: {
     backgroundColor: white,
+    // backgroundColor: 'red',
     paddingVertical: _vs(5),
+    paddingTop: _vs(10),
     paddingHorizontal: _ms(10),
-  },
-
-  allCarRentalBtn: {
-    // backgroundColor: 'silver',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: _ms(10),
-    marginBottom: _ms(15),
-    paddingVertical: _ms(4),
-    gap: _ms(10),
-  },
-
-  allCarRentalTxt: {
-    color: b3,
-    fontFamily: _fonts.nunitoSansSemiBold,
-    fontSize: _ms(12),
-  },
-
-  downArrow: {
-    width: _ms(10),
-    height: _ms(10),
-    transform: [{rotate: '90deg'}],
-    tintColor: b3,
-    top: 2,
   },
 
   topWrap: {
@@ -276,27 +308,6 @@ const styles = StyleSheet.create({
     fontSize: _ms(14),
     fontFamily: _fonts.nunitoSansSemiBold,
     marginVertical: _ms(5),
-  },
-
-  reverseBtn: {
-    width: _s(26),
-    height: _s(26),
-    backgroundColor: w1,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: _s(4),
-  },
-
-  reverseIcon: {
-    width: _s(12),
-    height: _s(12),
-    tintColor: blue,
-    resizeMode: 'contain',
-  },
-
-  right: {
-    flex: 1,
   },
 
   horizontalLine: {
@@ -453,16 +464,6 @@ const styles = StyleSheet.create({
 
   // -----------------------------
 
-  classOptnsWrap: {
-    backgroundColor: white,
-    position: 'absolute',
-    zIndex: 99,
-    top: 5,
-    right: _s(60),
-    elevation: 20,
-    shadowColor: black,
-  },
-
   classOptnTxt: {
     fontFamily: _fonts.nunitoSansRegular,
     color: b1,
@@ -476,12 +477,6 @@ const styles = StyleSheet.create({
     fontSize: _ms(12),
   },
 
-  classOptnTxtWrap: {
-    paddingVertical: _vs(8),
-    paddingHorizontal: _s(15),
-    backgroundColor: white,
-  },
-
   classOptnTxtWrapActive: {
     paddingVertical: _vs(8),
     paddingHorizontal: _s(15),
@@ -493,16 +488,15 @@ const styles = StyleSheet.create({
   preferredAirLineCon: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 5,
-    paddingLeft: _ms(5),
+    paddingVertical: 2,
+    paddingHorizontal: _ms(5),
     overflow: 'hidden',
     alignSelf: 'flex-start',
     borderBottomWidth: 1,
     borderColor: '#DEDEDE',
 
     zIndex: -1,
-
-    // FbackgroundColor: 'blue',
+    maxWidth: '65%',
   },
 
   searchIconStyle: {
@@ -515,42 +509,12 @@ const styles = StyleSheet.create({
   searchPreferredAirLineInput: {
     color: b3,
     padding: 0,
-    paddingHorizontal: _ms(15),
-    fontSize: _ms(10),
-
-    // backgroundColor: 'red',
-    // fontFamily: _fonts.nunitoSansRegular,
-  },
-
-  R_F_A_cityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: _ms(15),
-    paddingLeft: _ms(5),
-    gap: _ms(5),
-    zIndex: -1,
-  },
-
-  radioButton: {
-    borderWidth: 1,
-    borderColor: blue,
-    padding: 3,
-    borderRadius: _ms(15),
-  },
-
-  radio: {
-    width: _ms(10),
-    height: _ms(10),
-    borderRadius: _ms(15),
-    // borderWidth: 1,
-    // borderColor: blue,
-    backgroundColor: blue,
-  },
-
-  searchTxt: {
-    fontFamily: _fonts.nunitoSansRegular,
-    fontSize: _ms(10),
-    color: b3,
+    paddingHorizontal: _ms(8),
+    fontSize: _ms(12),
+    // fontWeight: 'bold',
+    fontFamily: _fonts.nunitoSansSemiBold,
+    minWidth: '30%',
+    maxWidth: '100%',
   },
 
   arrow: {
@@ -559,5 +523,63 @@ const styles = StyleSheet.create({
     transform: [{rotate: '90deg'}],
     marginLeft: _ms(10),
     tintColor: b1,
+  },
+
+  classOptnsWrap: {
+    backgroundColor: white,
+    position: 'absolute',
+    zIndex: 99,
+    top: 5,
+    right: _s(60),
+    elevation: 20,
+    shadowColor: black,
+    padding: _ms(10),
+    borderRadius: 5,
+  },
+
+  buttonsCon: {
+    // backgroundColor: 'red',
+    flexDirection: 'row',
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: blue,
+    borderRadius: 5,
+    gap: _ms(10),
+  },
+
+  roomsTxt: {
+    color: b1,
+    fontSize: _ms(15),
+    textAlign: 'center',
+    fontFamily: _fonts.nunitoSansRegular,
+  },
+
+  classOptnTxtWrap: {
+    paddingVertical: _vs(7),
+    paddingHorizontal: _s(15),
+    borderRadius: 3,
+  },
+
+  downArrowIcon: {
+    width: _ms(10),
+    height: _ms(10),
+    tintColor: b3,
+    transform: [{rotate: '90deg'}],
+    resizeMode: 'contain',
+    top: _ms(2),
+  },
+
+  hotelRatingBtn: {
+    // backgroundColor: 'lime',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: _ms(5),
+  },
+
+  hotelRatingTxt: {
+    fontSize: _ms(12),
+    color: b3,
+    fontFamily: _fonts.nunitoSansSemiBold,
   },
 });

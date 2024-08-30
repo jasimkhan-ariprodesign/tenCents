@@ -1,13 +1,15 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {b2, white} from '../config/colors';
 import {_fonts, _ms, _s} from './utils/Responsive';
 // rewritten
 const SearchButton = ({navigation, navigationScreen, name}) => {
   return (
-    <View style={styles.parent}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate(navigationScreen, {})}
+      style={styles.parent}>
       <Text style={styles.btnText}>{name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -22,6 +24,9 @@ const styles = StyleSheet.create({
     // paddingHorizontal: _ms(60),
     width: _s(180),
     borderRadius: 4,
+    alignSelf: 'center',
+    marginTop: _ms(20),
+    zIndex: -1,
   },
 
   btnText: {

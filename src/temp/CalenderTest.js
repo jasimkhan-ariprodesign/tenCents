@@ -18,7 +18,7 @@ import {genCurrentDate} from '../config/CurrentDate';
 
 const {width} = Dimensions.get('window');
 
-const CalenderTest = () => {
+const CalenderTest = ({navigation}) => {
   const date = new Date().toISOString().split('T')[0];
   console.log('-------------------', date);
 
@@ -85,7 +85,9 @@ const CalenderTest = () => {
       <StatusBar barStyle={'dark-content'} />
 
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
           <Image source={next} style={styles.backIcon} />
         </TouchableOpacity>
 

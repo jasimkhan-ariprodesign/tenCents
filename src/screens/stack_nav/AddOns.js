@@ -1,9 +1,9 @@
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Image, StatusBar, Dimensions } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { b1, b2, b3, blue, red, white } from '../../config/colors';
-import DirectTab from '../../components/Search/Flights/DirectTab';
-import Meals from '../../components/Search/Flights/Meals';
-import Extras from '../../components/Search/Flights/Extras';
+import DirectTab from '../../components/search/flights/DirectTab';
+import Meals from '../../components/search/flights/Meals';
+import Extras from '../../components/search/flights/Extras';
 import FareBreakSheet from '../../utility/FareBreakSheet';
 
 const { width, height } = Dimensions.get("window");
