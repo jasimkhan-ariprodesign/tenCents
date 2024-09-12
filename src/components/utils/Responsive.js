@@ -28,8 +28,14 @@ export const _fonts = {
   ralewayMedium: 'Raleway-Medium',
   ralewaySemiBold: 'Raleway-SemiBold',
   ralewayBold: 'Raleway-Bold',
+
+  interBold: 'Inter_18pt-Bold',
+  interLight: 'Inter_18pt-Light',
+  interMedium: 'Inter_18pt-Medium',
+  interSemiBold: 'Inter_18pt-SemiBold',
+  interRegular: 'Inter_18pt-Regular',
 };
 
-const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+const {width: _width, height: _height} = Dimensions.get('window');
 
-export {SCREEN_WIDTH, SCREEN_HEIGHT};
+export {_width, _height};

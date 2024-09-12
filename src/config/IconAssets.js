@@ -136,6 +136,14 @@ const icon = {
   hide: require('../assets/icons/hide.png'),
   phone: require('../assets/icons/phone.png'),
   usa: require('../assets/icons/usa.png'),
+
+  settings: require('../assets/icons/settings.png'),
+  feedback: require('../assets/icons/feedback.png'),
+  termAndCondition: require('../assets/icons/termAndCondition.png'),
+  privacyPolicy: require('../assets/icons/privacyPolicy.png'),
+  user2: require('../assets/icons/user2.png'),
+  upi: require('../assets/icons/upi.png'),
+  creditCard: require('../assets/icons/creditCard.png'),
 };
 
 module.exports = icon;

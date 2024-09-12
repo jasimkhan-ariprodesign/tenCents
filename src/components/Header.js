@@ -1,22 +1,15 @@
-import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {blue, white} from '../config/colors';
 import {_fonts, _ms, _s, _vs} from './utils/Responsive';
 
-const Header = () => {
+const Header = ({navigation}) => {
   return (
     <View style={styles.body}>
       {/* left bell icon */}
       <TouchableOpacity
         onPress={() => {
-          Alert.alert('Bell', 'notification');
+          navigation.navigate('Notification');
         }}
         style={styles.bellButton}>
         <Image
@@ -35,7 +28,7 @@ const Header = () => {
       <View style={styles.rightWrap}>
         <TouchableOpacity
           onPress={() => {
-            Alert.alert('chat');
+            navigation.navigate('ChartScreen');
           }}
           style={styles.beaconWrap}>
           <Image
@@ -46,7 +39,8 @@ const Header = () => {
 
         <TouchableOpacity
           onPress={() => {
-            Alert.alert('profile', 'screen design not available');
+            // navigation.navigate('ProfileScreen');
+            navigation.navigate('Account');
           }}
           style={styles.piWrap}>
           <Text style={styles.pi}>KV</Text>
@@ -66,6 +60,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     // backgroundColor: 'red',
+    paddingVertical: _ms(5),
   },
 
   bellIcon: {
@@ -80,7 +75,6 @@ const styles = StyleSheet.create({
     padding: 3,
     position: 'relative',
     zIndex: 1,
-    // backgroundColor: 'green',
   },
 
   bellDot: {
@@ -97,8 +91,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 8,
-    // backgroundColor: 'blue',
-    // paddingRight: 5,
   },
 
   piWrap: {
@@ -118,7 +110,6 @@ const styles = StyleSheet.create({
   },
 
   beaconWrap: {
-    // backgroundColor: 'lime',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 5,
@@ -128,7 +119,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'blue',
     width: '100%',
   },
 

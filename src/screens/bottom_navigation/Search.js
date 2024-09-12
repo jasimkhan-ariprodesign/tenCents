@@ -211,7 +211,7 @@ const Search = ({navigation}) => {
   return (
     <SafeAreaView style={styles.parent}>
       <BgGradient width={width} height={'70%'} />
-      <Header />
+      <Header navigation={navigation} />
       {/* <StatusBar
         translucent={true}
         backgroundColor={oneWayHandler.showSearchCon ? white : 'transparent'}
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
 
   body: {
     flex: 1,
-    paddingTop: _vs(20),
+    paddingTop: _vs(10),
   },
 
   headMenuWrap: {

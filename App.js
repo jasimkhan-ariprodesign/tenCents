@@ -54,6 +54,11 @@ import LoginScreen from './src/screens/login_and_signup/LoginScreen';
 import SignupScreen from './src/screens/login_and_signup/SignupScreen';
 import LoginWithPhone from './src/screens/login_and_signup/LoginWithPhone';
 import OTPVerifyScreen from './src/screens/login_and_signup/OTPVerifyScreen';
+import AddNewTravellerDetails from './src/screens/stack_nav/AddNewTravellerDetails';
+import ChartScreen from './src/screens/stack_nav/ChartScreen';
+import Notification from './src/screens/stack_nav/Notification';
+import ProfileScreen from './src/screens/stack_nav/ProfileScreen';
+import Account from './src/screens/stack_nav/Account';
 
 const RootStack = createNativeStackNavigator();
 console.log('App.js ---  not update folder...');
@@ -121,7 +126,6 @@ const App = () => {
         {/* group tickets */}
         <RootStack.Screen name="gtdisclaimer" component={GtDisclaimer} />
         <RootStack.Screen name="gtcreatereq" component={GtCreateReq} />
-
         {/* login and signup screens */}
         <RootStack.Screen
           name="LoginScreen"
@@ -139,7 +143,6 @@ const App = () => {
             // presentation: 'transparentModal'
           }}
         />
-
         <RootStack.Screen
           name="LoginWithPhone"
           component={LoginWithPhone}
@@ -147,10 +150,48 @@ const App = () => {
             animation: 'slide_from_right',
           }}
         />
-
         <RootStack.Screen
           name="OTPVerifyScreen"
           component={OTPVerifyScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+        <RootStack.Screen
+          name="AddNewTravellerDetails"
+          component={AddNewTravellerDetails}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <RootStack.Screen
+          name="ChartScreen"
+          component={ChartScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <RootStack.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <RootStack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <RootStack.Screen
+          name="Account"
+          component={Account}
           options={{
             animation: 'slide_from_right',
           }}

@@ -21,6 +21,8 @@ const blackTxt = '#1A1A1A';
 const black202020 = '#202020';
 const black111111 = '#111111';
 const primaryColor = '#6E73D3';
+const blueTransparent = 'rgba(33, 180, 226, 0.5)';
+const linkColor = '#1E90FF';
 
 module.exports = {
   white,
@@ -46,4 +48,6 @@ module.exports = {
   black202020,
   primaryColor,
   black111111,
+  blueTransparent,
+  linkColor,
 };
