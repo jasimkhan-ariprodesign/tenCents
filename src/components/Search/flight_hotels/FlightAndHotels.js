@@ -70,7 +70,10 @@ const FlightAndHotels = ({
             styles.buttonsContainer,
             {borderRadius: 0, borderTopLeftRadius: 5, borderTopRightRadius: 5},
           ]}>
-          {topMenuOptions.map(option => (
+          {[
+            {key: 'f&h', label: 'Flight + Hotel'},
+            {key: 'h&c', label: 'Hotel + Car'},
+          ].map(option => (
             <TouchableOpacity
               key={option.key}
               style={
@@ -165,6 +168,8 @@ const FlightAndHotels = ({
         navigation={navigation}
         name="Search"
         navigationScreen="fhsearch"
+        selectedTopMenu={selectedTopMenu}
+        // yaha pe selectedTopMenu pass kiya hai as a route flight + hotel AND hotel + car ke screen manage karne ke liye
       />
 
       {/* prifile option */}

@@ -1,157 +1,273 @@
-import { SafeAreaView, StyleSheet, Text, View, StatusBar, TouchableOpacity, Image, ScrollView, TextInput, Alert } from 'react-native'
-import React from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
+
 import icon from '../../../config/IconAssets';
 import commonStyles from '../../../assets/css/CommonFonts';
-import { b1, b2, blue, white } from '../../../config/colors';
+import {b1, b2, blue, white} from '../../../config/colors';
+import {
+  _ms,
+  _mvs,
+  backIconStyle,
+  checkIconStyle,
+  SafeAreaCon,
+} from '../../utils/Responsive';
 
-const HpAssistance = ({ navigation }) => {
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: white }}>
-            <StatusBar translucent={true} barStyle={"dark-content"} />
-            <View style={{ flex: 1, marginTop: 45 }}>
-                {/* nav */}
-                <TouchableOpacity
-                    style={styles.nav}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Image
-                        style={{ width: 22, height: 22, marginRight: 10 }}
-                        source={icon.next}
-                    />
+const HpAssistance = ({navigation}) => {
+  const [termAndCondition, setTermAndCondition] = useState(false);
+  return (
+    <SafeAreaCon style={[styles.container]}>
+      <StatusBar translucent={true} barStyle={'dark-content'} />
+      <View style={[commonStyles.flexOne]}>
+        {/* nav */}
 
-                    <Text style={[commonStyles.ns600, { fontSize: 20, textTransform: "uppercase" }]}>
-                        ASSISTANCE
-                    </Text>
-                </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.nav}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={[backIconStyle, {marginTop: _mvs(3)}]}
+            source={icon.next}
+          />
 
-                <View style={{ marginTop: 20, flex: 1, marginHorizontal: 15 }}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <Text style={[commonStyles.ns400, { textAlign: "center" }]}>
-                            Get in touch with us
-                        </Text>
+          <Text style={[commonStyles.ns600, {fontSize: _ms(16)}]}>
+            ASSISTANCE
+          </Text>
+        </TouchableOpacity>
 
-                        <View style={{ borderWidth: 1, marginTop: 12, borderColor: "#D9D9D9", borderRadius: 4, rowGap: 8, paddingVertical: 15, paddingHorizontal: 25 }}>
-                            <View style={{ rowGap: 8 }}>
-                                <Text style={[commonStyles.ns400, { textTransform: "uppercase" }]}>
-                                    Destination
-                                </Text>
+        <>
+          <ScrollView
+            scrollEventThrottle={16}
+            bounces={false}
+            decelerationRate={'fast'}
+            showsVerticalScrollIndicator={false}>
+            <Text
+              style={[
+                commonStyles.ns400,
+                commonStyles.textAlignCenter,
+                {marginTop: _mvs(20)},
+              ]}>
+              Get in touch with us
+            </Text>
 
-                                <TextInput
-                                    style={styles.inputBox}
-                                />
-                            </View>
+            <View style={[styles.parent]}>
+              <View style={[styles.inputCon]}>
+                <Text
+                  style={[
+                    commonStyles.ns400,
+                    commonStyles.textTransformUppercase,
+                  ]}>
+                  Destination
+                </Text>
 
-                            <View style={{ rowGap: 8 }}>
-                                <Text style={[commonStyles.ns400, { textTransform: "uppercase" }]}>
-                                    Departure City
-                                </Text>
+                <TextInput style={styles.inputBox} />
+              </View>
 
-                                <TextInput
-                                    style={styles.inputBox}
-                                />
-                            </View>
+              <View style={[styles.inputCon]}>
+                <Text
+                  style={[
+                    commonStyles.ns400,
+                    commonStyles.textTransformUppercase,
+                  ]}>
+                  Departure City
+                </Text>
 
-                            <View style={{ rowGap: 8 }}>
-                                <Text style={[commonStyles.ns400, { textTransform: "uppercase" }]}>
-                                    Name
-                                </Text>
+                <TextInput style={styles.inputBox} />
+              </View>
 
-                                <TextInput
-                                    style={styles.inputBox}
-                                />
-                            </View>
+              <View style={[styles.inputCon]}>
+                <Text
+                  style={[
+                    commonStyles.ns400,
+                    commonStyles.textTransformUppercase,
+                  ]}>
+                  Name
+                </Text>
 
-                            <View style={{ rowGap: 8 }}>
-                                <Text style={[commonStyles.ns400, { textTransform: "uppercase" }]}>
-                                    Phone
-                                </Text>
+                <TextInput style={styles.inputBox} />
+              </View>
 
-                                <TextInput
-                                    style={styles.inputBox}
-                                />
-                            </View>
+              <View style={[styles.inputCon]}>
+                <Text
+                  style={[
+                    commonStyles.ns400,
+                    commonStyles.textTransformUppercase,
+                  ]}>
+                  Phone
+                </Text>
 
-                            <View style={{ rowGap: 8 }}>
-                                <Text style={[commonStyles.ns400, { textTransform: "uppercase" }]}>
-                                    Email ID
-                                </Text>
+                <TextInput style={styles.inputBox} />
+              </View>
 
-                                <TextInput
-                                    style={styles.inputBox}
-                                />
-                            </View>
-                        </View>
+              <View style={[styles.inputCon]}>
+                <Text
+                  style={[
+                    commonStyles.ns400,
+                    commonStyles.textTransformUppercase,
+                  ]}>
+                  Email ID
+                </Text>
 
-                        <View style={{ marginTop: 15, columnGap: 8, flexDirection: "row", alignItems: "flex-start" }}>
-                            <TouchableOpacity>
-                                <View style={styles.circle} />
-                            </TouchableOpacity>
-
-                            <Text style={styles.dcltn}>
-                                I have read and agree to the
-                                <Text onPress={() => Alert.alert("User Agreement")} style={[styles.dcltn, { color: "#008CFF" }]}> User Agreement </Text>
-                                &
-                                <Text onPress={() => Alert.alert("Privacy Policy")} style={[styles.dcltn, { color: "#008CFF" }]}> Privacy Policy</Text>
-                            </Text>
-                        </View>
-
-                        <View style={{ marginTop: 15, alignItems: 'center' }}>
-                            <TouchableOpacity
-                                style={styles.btn}
-                            >
-                                <Text style={{ fontSize: 18, color: white, fontFamily: "Lato-Regular" }}>
-                                    Get a Callback
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={{ marginTop: 15 }}>
-                            <Text style={{ fontSize: 13, color: b1, fontFamily: "Lato-Regular" }}>
-                                750+ Travel Experts | 40 Lac+ Travelers | 65+ Destinations
-                            </Text>
-                        </View>
-                    </ScrollView>
-                </View>
+                <TextInput style={styles.inputBox} />
+              </View>
             </View>
-        </SafeAreaView >
-    )
+
+            <View style={styles.childOne}>
+              <TouchableOpacity
+                onPress={() => {
+                  setTermAndCondition(!termAndCondition);
+                }}>
+                <View
+                  style={[
+                    styles.circle,
+                    {backgroundColor: termAndCondition ? blue : white},
+                  ]}>
+                  <Image
+                    source={icon.check}
+                    tintColor={white}
+                    style={[checkIconStyle]}
+                  />
+                </View>
+              </TouchableOpacity>
+
+              <Text style={styles.dcltn}>
+                I have read and agree to the
+                <Text
+                  onPress={() => Alert.alert('User Agreement')}
+                  style={[styles.dcltn, {color: '#008CFF'}]}>
+                  {' '}
+                  User Agreement{' '}
+                </Text>
+                &
+                <Text
+                  onPress={() => Alert.alert('Privacy Policy')}
+                  style={[styles.dcltn, {color: '#008CFF'}]}>
+                  {' '}
+                  Privacy Policy
+                </Text>
+              </Text>
+            </View>
+
+            <TouchableOpacity style={styles.btn}>
+              <Text style={styles.btnTxt}>Get a Callback</Text>
+            </TouchableOpacity>
+
+            <View style={styles.bottomTxtCon}>
+              <Text style={styles.bottomTxt}>
+                750+ Travel Experts | 40 Lac+ Travelers | 65+ Destinations
+              </Text>
+            </View>
+          </ScrollView>
+        </>
+      </View>
+    </SafeAreaCon>
+  );
 };
 
 export default HpAssistance;
 
 const styles = StyleSheet.create({
-    nav: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        alignSelf: "flex-start",
-        marginLeft: 13,
-    },
-    inputBox: {
-        borderWidth: 1,
-        borderRadius: 3.6,
-        borderColor: blue,
-        backgroundColor: white,
-        paddingLeft: 10,
-    },
-    circle: {
-        width: 18,
-        height: 18,
-        borderWidth: 1,
-        borderColor: blue,
-        borderRadius: 10,
-    },
-    dcltn: {
-        fontFamily: "Lato-Regular",
-        fontSize: 12,
-        color: b1,
-    },
-    btn: {
-        backgroundColor: b2,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 30,
-        borderRadius: 25,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: white,
+  },
+
+  nav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    marginLeft: _ms(15),
+    gap: _ms(10),
+    marginTop: _mvs(15),
+  },
+
+  parent: {
+    marginTop: _mvs(15),
+    marginHorizontal: _ms(8),
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    rowGap: _mvs(10),
+    paddingVertical: _mvs(15),
+    paddingHorizontal: _ms(20),
+  },
+
+  inputCon: {
+    // backgroundColor: 'red',
+    gap: _mvs(4),
+  },
+
+  inputBox: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: blue,
+    padding: 0,
+    paddingLeft: _ms(10),
+    height: _mvs(40),
+  },
+
+  childOne: {
+    marginTop: _mvs(15),
+    marginHorizontal: _ms(8),
+    gap: _ms(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    // backgroundColor: 'red',
+  },
+
+  circle: {
+    width: _ms(18),
+    height: _ms(18),
+    borderRadius: _ms(18),
+    borderWidth: 1.5,
+    borderColor: blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: white,
+  },
+
+  dcltn: {
+    fontFamily: 'Lato-Regular',
+    fontSize: _ms(11),
+    color: b1,
+    flex: 1,
+  },
+
+  btn: {
+    marginTop: _mvs(15),
+    backgroundColor: b2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(8),
+    paddingBottom: _mvs(10),
+    paddingHorizontal: _ms(20),
+    borderRadius: 25,
+    alignSelf: 'center',
+  },
+
+  btnTxt: {
+    fontSize: _ms(15),
+    color: white,
+    fontFamily: 'Lato-Regular',
+  },
+
+  bottomTxtCon: {
+    marginTop: _mvs(15),
+    marginHorizontal: _ms(10),
+  },
+
+  bottomTxt: {
+    fontSize: _ms(12),
+    color: b1,
+    fontFamily: 'Lato-Regular',
+  },
 });

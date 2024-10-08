@@ -23,9 +23,9 @@ const DirectTab = () => {
   // console.log([...Array(5)]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showSideView, setShowSideView] = useState(false);
+
   const handlePress = item => {
     // Alert.alert(item.seatNumber);
-
     setSelectedItems(prevItems => {
       if (prevItems.includes(item)) {
         // Item is already selected, so remove it

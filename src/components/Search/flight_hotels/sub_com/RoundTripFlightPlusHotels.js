@@ -314,7 +314,8 @@ const RoundTripFlightPlusHotels = ({
             }}
             style={styles.travellersBtn}>
             <Text style={styles.enterLocTxt}>
-              {/* {oneWayHandler?.flightClass} */}1 Room
+              {oneWayHandler?.flightClass}
+              {/* 1 Room */}
             </Text>
           </TouchableOpacity>
         </View>

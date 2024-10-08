@@ -1,51 +1,73 @@
-import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import {
+  Alert,
+  Dimensions,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import BgGradient from '../../../utility/BgGradient';
 import Header from '../../Header';
 import commonStyles from '../../../assets/css/CommonFonts';
-import { b2, b3, blue, white } from '../../../config/colors';
+import {b1, b2, b3, bgColor, blue, white} from '../../../config/colors';
 import icon from '../../../config/IconAssets';
 import image from '../../../config/ImageAssets';
-import { Dropdown } from 'react-native-element-dropdown';
+import {Dropdown} from 'react-native-element-dropdown';
+import {
+  _fonts,
+  _ms,
+  _mvs,
+  _vs,
+  _width,
+  size15,
+  size18,
+} from '../../utils/Responsive';
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get('window');
 
-const ChReview = ({ navigation }) => {
+const genderData = [
+  {label: 'Male', value: 'male'},
+  {label: 'Female', value: 'female'},
+  {label: 'Others', value: 'others'},
+];
+
+const ChReview = ({navigation}) => {
+  const [gender, setGender] = useState(null);
+
   return (
-    <SafeAreaView style={styles.parent}>
-      <StatusBar translucent={true} barStyle={"light-content"} />
-      <BgGradient width={width} height={height * 0.1} />
+    <SafeAreaView style={commonStyles.flexOne}>
+      <StatusBar translucent={true} barStyle={'light-content'} />
+      <BgGradient width={_width} height={_vs(82)} />
       <Header />
 
       <View style={styles.body}>
-        <ScrollView
-          style={{ marginHorizontal: 5, marginTop: 10, flex: 1 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={{ rowGap: 10, marginBottom: 5 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{rowGap: _mvs(10)}}>
             {/* ticket */}
-            <View style={styles.comWrap}>
+            <View style={[styles.comWrap, {marginTop: _mvs(10)}]}>
               {/* hotel name */}
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', columnGap: 15 }}>
-                {/* left */}
-                <Image
-                  style={{ width: 100, height: 65 }}
-                  source={image.hotelimg2}
-                />
+              <View style={styles.containerOne}>
+                <Image style={styles.imageStyle} source={image.hotelimg2} />
 
-                {/* right */}
-                <View style={{ flex: 1, rowGap: 6 }}>
+                <View style={[commonStyles.flexOne, {rowGap: _mvs(5)}]}>
                   <Text style={[commonStyles.ns400]}>
                     New Apartments in Cranston by GLOBALSTAY
                   </Text>
-                  <Text style={[commonStyles.ns400, { color: b3 }]}>
+                  <Text style={[commonStyles.ns400, {color: b3}]}>
                     Thu, Dec-21-2023 - Thu, Jan-04-2024
                   </Text>
 
                   {/* btn action */}
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10 }}>
+                  <View
+                    style={[commonStyles.commWrapOne, {columnGap: _ms(10)}]}>
                     <TouchableOpacity>
-                      <Text style={[commonStyles.ns400, { color: blue, fontSize: 12 }]}>
+                      <Text style={[commonStyles.ns400, {color: blue}]}>
                         Change Hotel
                       </Text>
                     </TouchableOpacity>
@@ -53,7 +75,7 @@ const ChReview = ({ navigation }) => {
                     <Text>|</Text>
 
                     <TouchableOpacity>
-                      <Text style={[commonStyles.ns400, { color: blue, fontSize: 12 }]}>
+                      <Text style={[commonStyles.ns400, {color: blue}]}>
                         View Details
                       </Text>
                     </TouchableOpacity>
@@ -63,18 +85,15 @@ const ChReview = ({ navigation }) => {
             </View>
 
             {/* car details */}
-            <View style={[styles.comWrap, { rowGap: 10 }]}>
+            <View style={[styles.comWrap, {rowGap: _mvs(10)}]}>
               {/* car name & desp */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginLeft: 15, }}>
-                <View style={{ flex: 2, rowGap: 10 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 4 }}>
-                    <Text style={[commonStyles.ns400, { fontSize: 18 }]}>
+              <View style={[commonStyles.commWrapTwo, {gap: _ms(8)}]}>
+                <View style={[commonStyles.flexOne, {rowGap: _mvs(6)}]}>
+                  <View style={[commonStyles.commWrapOne, {columnGap: _ms(6)}]}>
+                    <Text style={[commonStyles.ns400, commonStyles.font16]}>
                       Economy
                     </Text>
-                    <Image
-                      style={{}}
-                      source={image.alamo}
-                    />
+                    <Image style={styles.alamoIcon} source={image.alamo} />
                   </View>
 
                   <Text style={commonStyles.ns400}>
@@ -82,95 +101,100 @@ const ChReview = ({ navigation }) => {
                   </Text>
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'center', rowGap: 10 }}>
-                  <Image
-                    style={{ width: 90, height: 52 }}
-                    source={image.car1}
-                  />
-                </View>
+                <>
+                  <Image style={styles.carIcon} source={image.car1} />
+                </>
               </View>
-
               {/* car perks */}
               <View style={styles.carPerks}>
-                <View style={{ flexDirection: 'row', alignItems: "center", columnGap: 8 }}>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(7)}]}>
                   <Image
-                    style={{ width: 15, height: 15, tintColor: blue }}
+                    style={size15}
+                    tintColor={blue}
                     source={icon.speedometer}
                   />
 
-                  <Text style={commonStyles.ns400}>
-                    Unlimited mileage
-                  </Text>
+                  <Text style={commonStyles.ns400}>Unlimited mileage</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: "center", columnGap: 8 }}>
-                  <Image
-                    style={{ width: 15, height: 15, tintColor: blue }}
-                    source={icon.plane}
-                  />
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(7)}]}>
+                  <Image style={size15} tintColor={blue} source={icon.plane} />
 
-                  <Text style={commonStyles.ns400}>
-                    At Airport
-                  </Text>
+                  <Text style={commonStyles.ns400}>At Airport</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: "center", columnGap: 8 }}>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(7)}]}>
                   <Image
-                    style={{ width: 15, height: 15, tintColor: blue }}
+                    style={size15}
+                    tintColor={blue}
                     source={icon.airConditioner}
                   />
 
-                  <Text style={commonStyles.ns400}>
-                    Air Conditioner
-                  </Text>
+                  <Text style={commonStyles.ns400}>Air Conditioner</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: "center", columnGap: 8 }}>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(7)}]}>
                   <Image
-                    style={{ width: 15, height: 15, tintColor: blue }}
+                    style={size15}
+                    tintColor={blue}
                     source={icon.gearshift}
                   />
 
-                  <Text style={commonStyles.ns400}>
-                    Automatic
-                  </Text>
+                  <Text style={commonStyles.ns400}>Automatic</Text>
                 </View>
               </View>
 
               {/* change car */}
-              <View style={{ flexDirection: 'row', alignItems: "center", marginTop: 10, justifyContent: "space-between", marginLeft: 15, }}>
-                <View style={{ flexDirection: "row", alignItems: "center", marginRight: 10, columnGap: 20, width: 210 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10 }}>
-                    <View style={[styles.seatWrap, { width: 35, height: 35 }]}>
+              <View style={[commonStyles.commWrapTwo, {}]}>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(10)}]}>
+                  <View
+                    style={[commonStyles.commWrapOne, {columnGap: _ms(10)}]}>
+                    <View style={[styles.seatWrap]}>
                       <Image
-                        style={{ width: 25, height: 25, tintColor: blue }}
+                        style={size18}
+                        tintColor={blue}
                         source={icon.baggage}
                       />
                     </View>
 
-                    <Text style={[commonStyles.ns600, { fontSize: 13, color: b3 }]}>
+                    <Text
+                      style={[
+                        commonStyles.ns600,
+                        commonStyles.font11,
+                        {color: b3},
+                      ]}>
                       2 Bags
                     </Text>
                   </View>
 
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10 }}>
-                    <View style={[styles.seatWrap, { width: 35, height: 35 }]}>
+                  <View
+                    style={[commonStyles.commWrapOne, {columnGap: _ms(10)}]}>
+                    <View style={[styles.seatWrap]}>
                       <Image
-                        style={{ width: 20, height: 20, tintColor: blue }}
+                        style={size18}
+                        tintColor={blue}
                         source={icon.seat}
                       />
                     </View>
 
-                    <Text style={[commonStyles.ns600, { fontSize: 13, color: b3 }]}>
+                    <Text
+                      style={[
+                        commonStyles.ns600,
+                        commonStyles.font11,
+                        {color: b3},
+                      ]}>
                       4 Seats
                     </Text>
                   </View>
                 </View>
 
-                <TouchableOpacity
-                  style={styles.chngCar}
-                >
-                  <Text style={[commonStyles.lbB1, { color: white }]}>
+                <TouchableOpacity style={styles.chngCar}>
+                  <Text
+                    style={[
+                      commonStyles.lbB1,
+                      commonStyles.font16,
+                      {color: white},
+                    ]}>
                     Change Car
                   </Text>
                 </TouchableOpacity>
@@ -179,17 +203,19 @@ const ChReview = ({ navigation }) => {
               <View style={styles.dottedLine} />
 
               {/* bottom part */}
-              <View style={{ marginHorizontal: 15, marginBottom: 10 }}>
-                <View style={{}}>
-                  <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                    Pick-up: <Text style={commonStyles.ns400}>
+              <View>
+                <View>
+                  <Text style={[commonStyles.ns600, commonStyles.font12]}>
+                    Pick-up:{' '}
+                    <Text style={commonStyles.ns400}>
                       2000 Airport Road Ne AB, CA, | Thu, Dec 21 2023 / 10:00 AM
                     </Text>
                   </Text>
                 </View>
-                <View style={{}}>
-                  <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                    Drop-off: <Text style={commonStyles.ns400}>
+                <View style={{marginTop: _mvs(4)}}>
+                  <Text style={[commonStyles.ns600, commonStyles.font12]}>
+                    Drop-off:{' '}
+                    <Text style={commonStyles.ns400}>
                       Same as Pick-up location | Thu, Jan 04 2024 / 10:00 AM
                     </Text>
                   </Text>
@@ -199,34 +225,55 @@ const ChReview = ({ navigation }) => {
 
             {/* pricing */}
             <View style={styles.comWrap}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", columnGap: 30 }}>
+              <View style={[commonStyles.commWrapTwo, {columnGap: _ms(8)}]}>
                 {/* left */}
-                <View style={{ rowGap: 6, width: 160 }}>
-                  <Text style={[commonStyles.ns600, { fontSize: 20 }]}>Package Price</Text>
-                  <Text style={[commonStyles.ns400, { color: b3 }]}>Per person</Text>
-                  <Text style={[commonStyles.ns400, { color: b3 }]}>Flight + Hotel(incl. taxes & fees)</Text>
+                <View style={[commonStyles.flexOne, {rowGap: _mvs(4)}]}>
+                  <Text style={[commonStyles.ns600, commonStyles.font16]}>
+                    Package Price
+                  </Text>
+                  <Text style={[commonStyles.ns400, {color: b3}]}>
+                    Per person
+                  </Text>
+                  <Text style={[commonStyles.ns400, {color: b3}]}>
+                    Flight + Hotel(incl. taxes & fees)
+                  </Text>
                 </View>
 
                 {/* right */}
-                <View style={{ alignItems: "flex-end", width: 150, rowGap: 6 }}>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={[commonStyles.ns400, { fontSize: 16 }]}>
+                <View
+                  style={[
+                    commonStyles.flexOne,
+                    commonStyles.alignItemsFlexEnd,
+                    {rowGap: _mvs(4)},
+                  ]}>
+                  <View style={commonStyles.commWrapSeven}>
+                    <Text style={[commonStyles.ns400, commonStyles.font14]}>
                       $2811
                     </Text>
-                    <Text style={[commonStyles.ns400, { fontSize: 11, top: 1 }]}>
-                      .49
-                    </Text>
+                    <Text style={[commonStyles.ns400]}>.49</Text>
                   </View>
 
-                  <Text style={[commonStyles.ns400, { fontSize: 12, textAlign: "right" }]}>
-                    As low as $351/mo with Affirm <Text style={[commonStyles.lbB1, { fontSize: 12, color: blue, textDecorationLine: "underline" }]} onPress={() => Alert.alert("Learn More")}>Learn more</Text>
+                  <Text style={[commonStyles.ns400, {textAlign: 'right'}]}>
+                    As low as $351/mo with Affirm{' '}
+                    <Text
+                      style={[
+                        commonStyles.font11,
+                        commonStyles.blueUnderlineTxt,
+                        {fontFamily: _fonts.londonBetween},
+                      ]}
+                      onPress={() => Alert.alert('Learn More')}>
+                      Learn more
+                    </Text>
                   </Text>
 
                   {/* btn */}
-                  <TouchableOpacity
-                    style={[styles.btn, { width: "100%" }]}
-                  >
-                    <Text style={[commonStyles.lbB1, { color: white, fontSize: 18 }]}>
+                  <TouchableOpacity style={[styles.btn]}>
+                    <Text
+                      style={[
+                        commonStyles.lbB1,
+                        commonStyles.font15,
+                        {color: white},
+                      ]}>
                       Continue
                     </Text>
                   </TouchableOpacity>
@@ -236,324 +283,423 @@ const ChReview = ({ navigation }) => {
 
             {/* traveller details */}
             <View style={styles.comWrap}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                {/* skip */}
-                <TouchableOpacity style={{ alignSelf: "flex-start", marginLeft: 10 }}>
-                  <Text style={[commonStyles.ns600, { fontSize: 18, color: blue }]}>
+              <View style={commonStyles.commWrapTwo}>
+                <TouchableOpacity>
+                  <Text
+                    style={[
+                      commonStyles.ns600,
+                      {fontSize: _ms(16), color: blue},
+                    ]}>
                     Skip
                   </Text>
                 </TouchableOpacity>
 
-                <View style={{ flexDirection: "row", alignItems: 'center', columnGap: 4, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={[commonStyles.ns600, { fontSize: 12 }]}>
+                <View style={[commonStyles.commWrapFive, {columnGap: _ms(5)}]}>
+                  <Text style={[commonStyles.ns600, commonStyles.font10]}>
                     Already a ClubMiles member?
                   </Text>
 
-                  <View style={{ backgroundColor: blue, alignItems: 'center', justifyContent: 'center', padding: 3, borderRadius: 15 }}>
+                  <View
+                    style={[
+                      styles.seatWrap,
+                      {width: _ms(16), height: _ms(16), backgroundColor: blue},
+                    ]}>
                     <Image
-                      style={{ width: 10, height: 10, tintColor: white }}
+                      style={styles.checkIcon}
                       source={icon.user}
+                      tintColor={white}
+                      resizeMode="contain"
                     />
                   </View>
 
                   <TouchableOpacity>
-                    <Text style={[commonStyles.ns600, { fontSize: 12, color: blue }]}>
+                    <Text
+                      style={[
+                        commonStyles.ns600,
+                        commonStyles.font12,
+                        {color: blue},
+                      ]}>
                       Sign In
                     </Text>
                   </TouchableOpacity>
                 </View>
               </View>
 
-              <Text style={[commonStyles.ns600, { fontSize: 22, textAlign: "center" }]}>
+              <Text
+                style={[
+                  commonStyles.ns600,
+                  {fontSize: _ms(16), textAlign: 'center'},
+                ]}>
                 Traveler Details
               </Text>
 
-              <View style={{ borderColor: "#004266", borderWidth: 1, borderRadius: 4, padding: 10 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 14, color: "#004266" }]}>
-                  Please enter the traveler's name and date of birth exactly as shown on the passport (for international flights) or valid government-issued photo ID (for domestic flights) to be used on this trip. Name changes are not permitted after booking.
+              <View style={styles.textCon}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    commonStyles.font12,
+                    {color: '#004266'},
+                  ]}>
+                  Please enter the traveler's name and date of birth exactly as
+                  shown on the passport (for international flights) or valid
+                  government-issued photo ID (for domestic flights) to be used
+                  on this trip. Name changes are not permitted after booking.
                 </Text>
               </View>
 
-              <View style={{ borderColor: "#E5AA01", borderWidth: 1, borderRadius: 4, padding: 10 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 14, color: "#664C00" }]}>
-                  Before booking your flight, please check the latest <Text style={[commonStyles.ns700, { fontSize: 14, color: "#664C00" }]}>
+              <View style={[styles.textCon, {borderColor: '#E5AA01'}]}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    commonStyles.font12,
+                    {color: '#664C00'},
+                  ]}>
+                  Before booking your flight, please check the latest{' '}
+                  <Text
+                    style={[
+                      commonStyles.ns700,
+                      commonStyles.font13,
+                      {color: '#664C00'},
+                    ]}>
                     COVID-19 travel restrictions to Canada
                   </Text>
                 </Text>
 
-                <Text style={[commonStyles.ns600, { fontSize: 14, color: "#664C00" }]}>
-                  Please continuously check all COVID-19 related restrictions directly with airlines prior to travel as they may change
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    commonStyles.font12,
+                    {color: '#664C00'},
+                  ]}>
+                  Please continuously check all COVID-19 related restrictions
+                  directly with airlines prior to travel as they may change
                 </Text>
 
-                <View style={{ marginTop: 30, marginHorizontal: 50 }}>
-                  <TouchableOpacity
-                    style={{ borderColor: "#6C5100", borderWidth: 1, borderRadius: 4, alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }}
-                  >
-                    <Text style={[commonStyles.lbB1, { fontSize: 18, color: "#664C00" }]}>
-                      See Restrictions
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity style={styles.seeRestriction}>
+                  <Text
+                    style={[
+                      commonStyles.lbB1,
+                      commonStyles.font15,
+                      {color: '#664C00'},
+                    ]}>
+                    See Restrictions
+                  </Text>
+                </TouchableOpacity>
               </View>
 
               {/* input fields */}
-              <View style={{ rowGap: 10 }}>
+              <View style={{rowGap: _mvs(10)}}>
                 {/* email */}
-                <View style={styles.inputGrp}>
-                  <Text style={[commonStyles.ns600, styles.lable]}>
-                    Email Address*
-                  </Text>
+
+                <TextInput
+                  placeholder="Email Address*"
+                  style={styles.inputBox}
+                  placeholderTextColor={b3}
+                />
+
+                {/* first name & middle name */}
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(8)}]}>
                   <TextInput
-                    style={styles.inputBox}
+                    placeholder="First Name*"
+                    style={[styles.inputBox, styles.inputWidth]}
+                    placeholderTextColor={b3}
+                  />
+
+                  <TextInput
+                    placeholder="Middle Name"
+                    placeholderTextColor={b3}
+                    style={[styles.inputBox, styles.inputWidth]}
                   />
                 </View>
 
-                {/* first name & middle name */}
-                <View style={{ alignItems: 'flex-start', flexDirection: 'row', columnGap: 10 }}>
-                  <View style={[styles.inputGrp, { width: 160 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      First Name*
-                    </Text>
-
-                    <TextInput
-                      style={[styles.inputBox]}
-                    />
-                  </View>
-
-                  <View style={[styles.inputGrp, { width: 160 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      Middle Name*
-                    </Text>
-
-                    <TextInput
-                      style={[styles.inputBox, { flex: 1 }]}
-                    />
-                  </View>
-                </View>
-
                 {/* date of birth */}
-                <View style={[styles.inputGrp, { width: 300 }]}>
-                  <Text style={[commonStyles.ns600, styles.lableActive]}>
-                    Date of birth*
-                  </Text>
+                <View style={[styles.inputGrp]}>
+                  <Text style={[styles.lable]}>Date of birth*</Text>
 
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 6 }}>
-                    <Dropdown
+                  <View style={[commonStyles.commWrapOne, {gap: _ms(10)}]}>
+                    <TextInput
+                      placeholder="Day"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={2}
+                      keyboardType="number-pad"
+                    />
+                    <TextInput
+                      placeholder="Month"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={2}
+                      keyboardType="number-pad"
+                    />
+                    <TextInput
+                      placeholder="Year"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={4}
+                      keyboardType="number-pad"
+                    />
+
+                    {/* <Dropdown
                       data={[]}
-                      placeholder='DD'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
+                      placeholder="Month"
+                      labelField="label"
+                      valueField="value"
+                      placeholderStyle={[
+                        commonStyles.font12,
+                        {fontFamily: _fonts.nunitoSansSemiBold},
+                      ]}
                       style={styles.dropDownBox}
+                      containerStyle={{
+                        width: '85%',
+                        backgroundColor: 'green',
+                        padding: 10,
+                      }}
+                      itemContainerStyle={{
+                        backgroundColor: 'red',
+                        borderWidth: 1,
+                        zIndex: 1,
+                      }}
                     />
                     <Dropdown
                       data={[]}
-                      placeholder='MM'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
+                      placeholder="DD"
+                      placeholderStyle={[
+                        commonStyles.font12,
+                        {fontFamily: _fonts.nunitoSansSemiBold},
+                      ]}
                       style={styles.dropDownBox}
+                      // renderRightIcon={() => null}
+                      containerStyle={{
+                        width: '85%',
+                        backgroundColor: 'green',
+                        padding: 10,
+                      }}
+                      itemContainerStyle={{
+                        backgroundColor: 'red',
+                        borderWidth: 1,
+                        zIndex: 1,
+                      }}
                     />
                     <Dropdown
                       data={[]}
-                      placeholder='YYYY'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
+                      placeholder="YYYY"
+                      placeholderStyle={[
+                        commonStyles.font12,
+                        {fontFamily: _fonts.nunitoSansSemiBold},
+                      ]}
                       style={styles.dropDownBox}
-                    />
+                      containerStyle={{
+                        width: '85%',
+                        backgroundColor: 'green',
+                        padding: 10,
+                      }}
+                      itemContainerStyle={{
+                        backgroundColor: 'red',
+                        borderWidth: 1,
+                        zIndex: 1,
+                      }}
+                    /> */}
                   </View>
                 </View>
 
                 {/* last name & gender */}
-                <View style={{ alignItems: 'flex-start', flexDirection: 'row', columnGap: 10 }}>
-                  <View style={[styles.inputGrp, { width: 160 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      Last Name*
-                    </Text>
 
-                    <TextInput
-                      style={[styles.inputBox]}
-                    />
-                  </View>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(8)}]}>
+                  <TextInput
+                    placeholder="Last Name*"
+                    style={[styles.inputBox, styles.inputWidth]}
+                    placeholderTextColor={b3}
+                  />
 
-                  <View style={[styles.inputGrp, { width: 140 }]}>
-                    <Text style={[commonStyles.ns600, styles.lableActive]}>
-                      Gender*
-                    </Text>
+                  <View style={[styles.genderCon]}>
+                    <Text style={[styles.lable]}>Gender*</Text>
 
                     <Dropdown
-                      data={[]}
-                      placeholder='Select'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
+                      data={genderData}
+                      placeholder="Select"
+                      placeholderStyle={styles.lable}
                       style={styles.dropDownBox}
+                      labelField="label"
+                      valueField="value"
+                      value={gender}
+                      onChange={item => {
+                        setGender(item.value);
+                      }}
+                      itemTextStyle={styles.lable}
+                      selectedTextStyle={styles.lable}
                     />
                   </View>
                 </View>
 
                 {/* passport */}
-                <View style={[styles.inputGrp, { width: 270 }]}>
-                  <Text style={[commonStyles.ns600, styles.lable]}>
-                    Passport Number*
-                  </Text>
-                  <TextInput
-                    style={styles.inputBox}
-                  />
-                </View>
+                <TextInput
+                  placeholder="Passport Number*"
+                  placeholderTextColor={b3}
+                  style={[styles.inputBox, {maxWidth: '75%'}]}
+                />
 
                 {/* Country */}
-                <View style={[styles.inputGrp, { width: 250 }]}>
-                  <Text style={[commonStyles.ns600, styles.lable]}>
-                    Country*
-                  </Text>
-                  <TextInput
-                    style={styles.inputBox}
-                  />
-                </View>
+                <TextInput
+                  placeholder="Country*"
+                  placeholderTextColor={b3}
+                  style={[styles.inputBox, {maxWidth: '75%'}]}
+                />
 
-                {/* Passport */}
-                <View style={[styles.inputGrp, { width: 300 }]}>
-                  <Text style={[commonStyles.ns600, styles.lableActive]}>
-                    Passport Expiry*
-                  </Text>
+                <View style={[styles.inputGrp]}>
+                  <Text style={[styles.lable]}>Passport Expiry*</Text>
 
-                  <View style={{ flexDirection: "row", alignItems: "center", columnGap: 6 }}>
-                    <Dropdown
-                      data={[]}
-                      placeholder='Day'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
-                      style={styles.dropDownBox}
+                  <View style={[commonStyles.commWrapOne, {gap: _ms(10)}]}>
+                    <TextInput
+                      placeholder="Day"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={2}
+                      keyboardType="number-pad"
                     />
-                    <Dropdown
-                      data={[]}
-                      placeholder='Month'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
-                      style={styles.dropDownBox}
+                    <TextInput
+                      placeholder="Month"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={2}
+                      keyboardType="number-pad"
                     />
-                    <Dropdown
-                      data={[]}
-                      placeholder='Year'
-                      placeholderStyle={[commonStyles.ns600, { fontSize: 14, color: b3 }]}
-                      style={styles.dropDownBox}
+                    <TextInput
+                      placeholder="Year"
+                      placeholderTextColor={b3}
+                      style={[styles.monthInput, styles.lable]}
+                      maxLength={4}
+                      keyboardType="number-pad"
                     />
                   </View>
                 </View>
               </View>
 
-              <View style={{ alignItems: "flex-start", marginTop: 10 }}>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", alignItems: 'center', columnGap: 8 }}
-                >
-                  <Text style={[commonStyles.ns600, { color: blue }]}>
-                    Frequent Flyer and Optional Requests
-                  </Text>
+              <TouchableOpacity
+                style={[
+                  commonStyles.commWrapOne,
+                  {columnGap: _ms(10), alignSelf: 'flex-start'},
+                ]}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    commonStyles.font13,
+                    {color: blue},
+                  ]}>
+                  Frequent Flyer and Optional Requests
+                </Text>
 
-                  <Image
-                    style={{ width: 16, height: 16, tintColor: blue, transform: [{ rotate: "90deg" }] }}
-                    source={icon.rightArrow}
-                  />
-                </TouchableOpacity>
-              </View>
+                <Image
+                  style={[
+                    styles.downArrIcon,
+                    {transform: [{rotate: '90deg'}], top: _mvs(2)},
+                  ]}
+                  source={icon.rightArrow}
+                />
+              </TouchableOpacity>
             </View>
 
             {/* Billing and Contact Information */}
             <View style={styles.comWrap}>
-              {/* skip */}
-              <TouchableOpacity style={{ alignSelf: "flex-start", marginLeft: 10 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 18, color: blue }]}>
+              <TouchableOpacity style={{alignSelf: 'flex-start'}}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    {fontSize: _ms(16), color: blue},
+                  ]}>
                   Skip
                 </Text>
               </TouchableOpacity>
 
-              <Text style={[commonStyles.ns700, { textAlign: "center" }]}>
+              <Text
+                style={[
+                  commonStyles.ns700,
+                  commonStyles.font15,
+                  {textAlign: 'center'},
+                ]}>
                 Billing and Contact Information
               </Text>
 
               {/* inputs */}
-              <View style={{ rowGap: 10 }}>
+              <View style={{rowGap: 10}}>
                 {/* country & address */}
-                <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10, }}>
-                  <View style={[styles.inputGrp, { flex: 1 }]}>
-                    <Text style={[commonStyles.ns600, styles.lableActive]}>
-                      Country*
-                    </Text>
+                <View style={[commonStyles.commWrapSeven, {gap: _ms(6)}]}>
+                  <View style={styles.countryCon}>
+                    <Text style={[styles.absoluteLabel]}>Country*</Text>
                     <TextInput
-                      style={[styles.inputBox, commonStyles.ns600]}
-                      value='United States'
+                      // placeholder="Country*"
+                      placeholderTextColor={b3}
+                      style={styles.countryInput}
+                      value="United States"
                     />
                   </View>
 
-                  <View style={[styles.inputGrp, { flex: 1.4 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      Address*
-                    </Text>
-                    <TextInput
-                      style={[styles.inputBox, commonStyles.ns600]}
-                    />
+                  <View style={[styles.countryCon, {flex: 1.5}]}>
+                    <Text style={[styles.absoluteLabel]}>Address*</Text>
+                    <TextInput style={styles.countryInput} />
                   </View>
                 </View>
 
                 {/* city & zip & state */}
-                <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10, }}>
-                  <View style={[styles.inputGrp, { flex: 1 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      Zip*
-                    </Text>
+                <View style={[commonStyles.commWrapSeven, {gap: _ms(6)}]}>
+                  <View style={styles.countryCon}>
+                    <Text style={[styles.absoluteLabel]}>Zip*</Text>
                     <TextInput
-                      style={[styles.inputBox, commonStyles.ns600]}
-                      keyboardType='number-pad'
+                      // placeholder="Country*"
+                      placeholderTextColor={b3}
+                      style={styles.countryInput}
                     />
                   </View>
 
-                  <View style={[styles.inputGrp, { flex: 1 }]}>
-                    <Text style={[commonStyles.ns600, styles.lable]}>
-                      City*
-                    </Text>
-                    <TextInput
-                      style={[styles.inputBox, commonStyles.ns600]}
-                    />
+                  <View style={[styles.countryCon]}>
+                    <Text style={[styles.absoluteLabel]}>City*</Text>
+                    <TextInput style={styles.countryInput} />
                   </View>
 
-                  <View style={[styles.inputGrp, { flex: 1 }]}>
-                    <Text style={[commonStyles.ns600, styles.lableActive]}>
-                      State*
-                    </Text>
-                    <TextInput
-                      style={[styles.inputBox, commonStyles.ns600]}
-                      value='State*'
-                    />
+                  <View style={[styles.countryCon]}>
+                    <Text style={[styles.absoluteLabel]}>State*</Text>
+                    <TextInput value="State*" style={styles.countryInput} />
                   </View>
                 </View>
 
                 {/* Contact */}
-                <View style={styles.inputGrp}>
-                  <Text style={[commonStyles.ns600, styles.lable]}>
-                    Contact Phone*
-                  </Text>
-                  <TextInput
-                    style={[styles.inputBox, commonStyles.ns600]}
-                    keyboardType='number-pad'
-                  />
+                <View style={[styles.countryCon]}>
+                  <Text style={[styles.absoluteLabel]}>Contact Phone*</Text>
+                  <TextInput style={styles.countryInput} />
                 </View>
 
                 {/* Confirm Email */}
-                <View style={styles.inputGrp}>
-                  <Text style={[commonStyles.ns600, styles.lable]}>
+                <View style={[styles.countryCon]}>
+                  <Text style={[styles.absoluteLabel]}>
                     Confirm Email Address*
                   </Text>
-                  <TextInput
-                    style={[styles.inputBox, commonStyles.ns600]}
-                    keyboardType='email-address'
-                  />
+                  <TextInput style={styles.countryInput} />
                 </View>
               </View>
 
-              <View style={{ rowGap: 30 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 14, color: b3 }]}>
+              <View style={{rowGap: _mvs(15)}}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    commonStyles.font10,
+                    {color: b3},
+                  ]}>
                   Booking confirmation will be sent to this email address
                 </Text>
 
-                <View style={{ flexDirection: "row", alignItems: "flex-start", columnGap: 15, alignSelf: "flex-start" }}>
+                <View
+                  style={[commonStyles.commWrapSeven, {columnGap: _ms(10)}]}>
                   <TouchableOpacity>
-                    <View style={styles.circle} />
+                    <View style={[styles.circle, {top: _mvs(3)}]} />
                   </TouchableOpacity>
 
-                  <Text style={[commonStyles.ns600, { fontSize: 15, flex: 1 }]}>
-                    I agree to share this contact information with the airline(s) associated with this booking.
+                  <Text
+                    style={[
+                      commonStyles.ns600,
+                      commonStyles.font12,
+                      commonStyles.flexOne,
+                    ]}>
+                    I agree to share this contact information with the
+                    airline(s) associated with this booking.
                   </Text>
                 </View>
               </View>
@@ -562,98 +708,118 @@ const ChReview = ({ navigation }) => {
             {/* Policies & Review */}
             <View style={styles.comWrap}>
               {/* skip */}
-              <TouchableOpacity style={{ alignSelf: "flex-start", marginLeft: 10 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 18, color: blue }]}>
+              <TouchableOpacity style={{alignSelf: 'flex-start'}}>
+                <Text
+                  style={[
+                    commonStyles.ns600,
+                    {fontSize: _ms(16), color: blue},
+                  ]}>
                   Skip
                 </Text>
               </TouchableOpacity>
 
-              <Text style={[commonStyles.ns600, { fontSize: 18 }]}>
+              <Text style={[commonStyles.ns600, commonStyles.font15]}>
                 Policies & Review
               </Text>
 
               {/* hotel cancel */}
-              <Text style={[commonStyles.ns600, { color: "#DF1414" }]}>
+              <Text style={[commonStyles.ns600, {color: '#DF1414'}]}>
                 Hotel Cancellations
               </Text>
 
               <Text style={commonStyles.ns400}>
-                The guest checking into hotel must be 21 years or older, present a valid government-issued photo ID and credit card. Please confirm that the dates of your accommodations are correct. Presence of primary guest is mandatory at the time of check-in.
+                The guest checking into hotel must be 21 years or older, present
+                a valid government-issued photo ID and credit card. Please
+                confirm that the dates of your accommodations are correct.
+                Presence of primary guest is mandatory at the time of check-in.
               </Text>
 
-              <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
+              <Text style={[commonStyles.ns600, commonStyles.font12]}>
                 Check-in Fri. Dec-22-2023 | Check-out Thu. Jan-04-2024
               </Text>
 
-              <Text style={commonStyles.ns600}>
-                Primary Guest Name :
-                Kevin Vo
-                Male
+              <Text style={[commonStyles.ns600, commonStyles.font12]}>
+                Primary Guest Name : Kevin Vo Male
               </Text>
 
-              <TouchableOpacity
-                style={{ alignSelf: "flex-start" }}
-              >
-                <Text style={[commonStyles.ns600, { fontSize: 17, color: blue, textDecorationLine: "underline" }]}>
+              <TouchableOpacity style={{alignSelf: 'flex-start'}}>
+                <Text
+                  style={[commonStyles.ns600, commonStyles.blueUnderlineTxt]}>
                   Make changes
                 </Text>
               </TouchableOpacity>
 
-              {/* car cancell */}
-              <Text style={[commonStyles.ns600, { color: "#DF1414" }]}>
-                Car Cancellations
+              {/* flight cancell */}
+              <Text style={[commonStyles.ns600, {color: '#DF1414'}]}>
+                Flight Cancellations
               </Text>
 
               <Text style={commonStyles.ns400}>
-                Please confirm that dates and times of booking and name of driver is correct. Driver must be present at the time of pick-up.
+                Please confirm that the date(s) and time(s) of flights and
+                name(s) of travelers are accurate. Each traveler's name and date
+                of birth must be exactly as shown on the passport or other
+                government-issued photo ID to be used on this trip.
+              </Text>
+
+              <Text style={[commonStyles.ns600, commonStyles.font13]}>
+                Depart: Thu, Dec 21 2023 | Return: Thu, Jan 04 2024
               </Text>
 
               <Text style={commonStyles.ns600}>
-                Pick-up Date: Thu, Dec 21 2023 / 10:00 AM |Drop-off Date: Thu, Jan 04 2024 / 10:00 AM
+                Traveller 1 : Kevin Vo Male
               </Text>
 
-              <Text style={commonStyles.ns600}>
-                Driver :
-              </Text>
-
-              <TouchableOpacity
-                style={{ alignSelf: "flex-start" }}
-              >
-                <Text style={[commonStyles.ns600, { fontSize: 17, color: blue, textDecorationLine: "underline" }]}>
+              <TouchableOpacity style={{alignSelf: 'flex-start'}}>
+                <Text
+                  style={[commonStyles.ns600, commonStyles.blueUnderlineTxt]}>
                   Make changes
                 </Text>
               </TouchableOpacity>
 
               {/* note */}
-              <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                Please note: <Text style={[commonStyles.ns400, { color: b3 }]}>
-                  All rates quoted are USD. Please keep in mind that, in the event of cancellation, any booking fees already paid are non-refundable. Your credit/debit card may be billed in multiple charges totaling the above amount.
+              <Text style={[commonStyles.ns600]}>
+                Please note:{' '}
+                <Text style={[commonStyles.ns400, {color: b3}]}>
+                  All rates quoted are USD. Please keep in mind that, in the
+                  event of cancellation, any booking fees already paid are
+                  non-refundable. Your credit/debit card may be billed in
+                  multiple charges totaling the above amount.
                 </Text>
               </Text>
 
-              <View style={styles.dashedLine} />
+              <View style={styles.dottedLine} />
 
               <Text style={commonStyles.ns400}>
-                Tickets are non-transferable and name changes are not permitted. Total price shown includes all applicable taxes & fees and our service fees. Some airlines may charge additional baggage fees or other fees. Fares are not guaranteed until ticketed. Tickets and our fees are non-refundable (see Fare Rules). Some taxes and government agency fees may be non-refundable.Date and routing changes will be subject to airline penalties and our fees.
+                Tickets are non-transferable and name changes are not permitted.
+                Total price shown includes all applicable taxes & fees and our
+                service fees. Some airlines may charge additional baggage fees
+                or other fees. Fares are not guaranteed until ticketed. Tickets
+                and our fees are non-refundable (see Fare Rules). Some taxes and
+                government agency fees may be non-refundable.Date and routing
+                changes will be subject to airline penalties and our fees.
               </Text>
 
-              <View style={styles.dashedLine} />
+              <View style={styles.dottedLine} />
 
-              <Text style={[commonStyles.ns400, { textAlign: "center" }]}>
-                By clicking 'Confirm & Book', I agree that I have read and accepted the above policies and 10 Cents Air.com's Terms and Conditions and Privacy Policy
+              <Text style={[commonStyles.ns400, {textAlign: 'center'}]}>
+                By clicking 'Confirm & Book', I agree that I have read and
+                accepted the above policies and 10 Cents Air.com's Terms and
+                Conditions and Privacy Policy
               </Text>
 
               {/* Confirm & Book */}
-              <View style={{ marginTop: 20, marginHorizontal: 30 }}>
-                <TouchableOpacity
-                  style={styles.btnLrg}
-                  onPress={() => navigation.navigate("chpayment")}
-                >
-                  <Text style={[commonStyles.lbB1, { color: white }]}>
-                    Confirm & Book
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.btnLrg}
+                onPress={() => navigation.navigate('chpayment')}>
+                <Text
+                  style={[
+                    commonStyles.lbB1,
+                    commonStyles.font16,
+                    {color: white},
+                  ]}>
+                  Confirm & Book
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -678,118 +844,241 @@ const ChReview = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View> */}
-      </View >
-    </SafeAreaView >
-  )
+      </View>
+    </SafeAreaView>
+  );
 };
 
 export default ChReview;
 
 const styles = StyleSheet.create({
-  parent: {
-    flex: 1,
-  },
   body: {
-    marginTop: 18,
     flex: 1,
+    marginTop: _mvs(10),
+    backgroundColor: bgColor,
   },
+
   comWrap: {
     backgroundColor: white,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
+    marginHorizontal: _ms(6),
+    paddingVertical: _mvs(10),
+    paddingHorizontal: _ms(8),
     borderRadius: 8,
-    elevation: 4,
-    rowGap: 15,
+    elevation: 2,
+    rowGap: _mvs(10),
   },
-  btn: {
-    borderRadius: 4,
-    backgroundColor: b2,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+
+  containerOne: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    columnGap: _ms(10),
   },
-  dottedLine: {
-    borderColor: b3,
-    borderWidth: 1,
-    marginTop: 5,
-    borderStyle: "dashed",
+
+  imageStyle: {
+    width: _ms(70),
+    height: _mvs(50),
+    resizeMode: 'cover',
+    borderRadius: 2,
   },
-  dashedLine: {
-    borderTopWidth: 1,
-    borderStyle: "dashed",
-    borderTopColor: b3,
-    marginVertical: 10,
+
+  alamoIcon: {
+    width: _ms(80),
+    height: _mvs(22),
+    resizeMode: 'contain',
   },
+
+  carIcon: {
+    width: _ms(100),
+    height: _mvs(50),
+    // resizeMode: 'contain',
+  },
+
   carPerks: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 15,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     rowGap: 10,
-    marginLeft: 15,
-    width: 250,
+    // width: 250,
+    maxWidth: '75%',
+    // backgroundColor: 'red',
   },
-  chngCar: {
-    borderRadius: 8,
-    backgroundColor: b2,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginRight: 10,
-  },
+
   seatWrap: {
-    backgroundColor: "rgba(33, 180, 226, 0.1)",
-    borderRadius: 22,
-    width: 22,
-    height: 22,
+    backgroundColor: 'rgba(33, 180, 226, 0.1)',
+    borderRadius: _ms(28),
+    width: _ms(28),
+    height: _ms(28),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  inputBox: {
-    height: 40,
-    paddingLeft: 5,
+
+  chngCar: {
+    borderRadius: 8,
+    backgroundColor: b2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(8),
+    width: _ms(102),
   },
+
+  dottedLine: {
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderTopColor: b3,
+    marginVertical: _mvs(10),
+  },
+
+  btn: {
+    borderRadius: 4,
+    backgroundColor: b2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(5),
+    paddingHorizontal: _ms(22),
+  },
+
+  checkIcon: {
+    width: _ms(10),
+    height: _ms(10),
+    tintColor: '#24AD53',
+  },
+
+  textCon: {
+    borderColor: '#004266',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: _ms(8),
+  },
+
+  seeRestriction: {
+    borderColor: '#6C5100',
+    borderWidth: 1,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(5),
+    paddingHorizontal: _ms(25),
+    alignSelf: 'center',
+    marginTop: _mvs(10),
+  },
+
+  lable: {
+    color: b3,
+    fontSize: _ms(12),
+    fontFamily: _fonts.nunitoSansSemiBold,
+  },
+
+  monthInput: {
+    padding: 0,
+    flex: 1,
+    // backgroundColor: 'red',
+  },
+
+  genderCon: {
+    borderWidth: 1,
+    borderColor: '#D8D8D8',
+    height: _mvs(45),
+    minWidth: '44%',
+    borderRadius: 4,
+    paddingHorizontal: _ms(10),
+  },
+
+  downArrIcon: {
+    width: _ms(16),
+    height: _ms(16),
+    tintColor: blue,
+  },
+
+  countryCon: {
+    // width: '43%',
+    flex: 1,
+    height: _mvs(45),
+    borderWidth: 1,
+    borderColor: '#D8D8D8',
+    paddingHorizontal: _ms(8),
+    borderRadius: 4,
+  },
+
+  absoluteLabel: {
+    color: b3,
+    fontSize: _ms(12),
+    fontFamily: _fonts.nunitoSansSemiBold,
+    position: 'absolute',
+    left: _ms(8),
+  },
+
+  countryInput: {
+    padding: 0,
+    // backgroundColor: 'rgba(154, 205, 50, 0.2)',
+    color: b1,
+    fontSize: _ms(12),
+    fontFamily: _fonts.nunitoSansSemiBold,
+    flex: 1, // don't remove
+    paddingTop: _mvs(12),
+  },
+
+  //---
+
+  dashedLine: {
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderTopColor: b3,
+    marginVertical: 10,
+  },
+
+  inputBox: {
+    height: _mvs(45),
+    padding: 0,
+    paddingHorizontal: _ms(10),
+    borderWidth: 1,
+    borderColor: '#D8D8D8',
+    borderRadius: 4,
+    color: b3,
+    fontFamily: _fonts.nunitoSansSemiBold,
+    fontSize: _ms(12),
+  },
+
+  inputWidth: {
+    minWidth: '44%',
+    maxWidth: '49%',
+  },
+
   dropDownBox: {
-    height: 40,
-    paddingLeft: 5,
     flex: 1,
   },
+
   inputGrp: {
     borderWidth: 1,
-    borderColor: "#D8D8D8",
+    borderColor: '#D8D8D8',
     borderRadius: 4,
-    paddingTop: 20,
-    position: 'relative',
+    paddingHorizontal: _ms(10),
+    height: _mvs(45),
+    maxWidth: '75%',
   },
-  lable: {
-    fontSize: 14,
-    paddingLeft: 5,
-    position: "absolute",
-    top: 20,
-    color: b3,
-  },
+
   lableActive: {
     fontSize: 14,
     paddingLeft: 5,
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     color: b3,
   },
+
   circle: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
+    width: _ms(20),
+    height: _ms(20),
+    borderWidth: 1.5,
     borderColor: blue,
     borderRadius: 25,
   },
+
   btnLrg: {
     borderRadius: 8,
     backgroundColor: b2,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(7),
+    marginHorizontal: _ms(30),
+    marginBottom: _mvs(10),
   },
 });

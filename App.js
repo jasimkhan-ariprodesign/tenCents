@@ -1,4 +1,6 @@
 import React from 'react';
+import 'react-native-reanimated';
+import 'react-native-gesture-handler';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import WelcomeScreen from './src/screens/WelcomeScreen';
@@ -48,8 +50,6 @@ import HpUserDetails from './src/components/search/holiday_package/HpUserDetails
 import HpPriceSum from './src/components/search/holiday_package/HpPriceSum';
 import HpPayment from './src/components/search/holiday_package/HpPayment';
 
-import 'react-native-reanimated';
-import 'react-native-gesture-handler';
 import LoginScreen from './src/screens/login_and_signup/LoginScreen';
 import SignupScreen from './src/screens/login_and_signup/SignupScreen';
 import LoginWithPhone from './src/screens/login_and_signup/LoginWithPhone';

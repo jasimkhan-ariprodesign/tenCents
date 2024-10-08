@@ -1,105 +1,138 @@
-import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import React from 'react';
 import BgGradient from '../../../utility/BgGradient';
 import Header from '../../Header';
 import commonStyles from '../../../assets/css/CommonFonts';
-import { blue, white, b1, b2, b3 } from '../../../config/colors';
+import {blue, white, b1, b2, b3, bgColor} from '../../../config/colors';
 import icon from '../../../config/IconAssets';
+import {
+  _ms,
+  _mvs,
+  _s,
+  _vs,
+  _width,
+  clubIcon,
+  size15,
+  size18,
+} from '../../utils/Responsive';
 
-const { width, height } = Dimensions.get("window");
-
-const Chpayment = ({ navigation }) => {
+const Chpayment = ({navigation}) => {
   return (
-    <SafeAreaView style={styles.parent}>
-      <BgGradient width={width} height={height * 0.1} />
+    <SafeAreaView style={commonStyles.flexOne}>
+      <BgGradient width={_width} height={_vs(82)} />
       <Header />
 
       <View style={styles.body}>
-        <ScrollView
-          style={{ marginHorizontal: 10, marginTop: 5, flex: 1 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={{ paddingVertical: 5, rowGap: 15 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{rowGap: _mvs(10), marginHorizontal: _ms(8)}}>
             {/* info */}
-            <View style={{ marginTop: 5 }}>
-              <Text style={[commonStyles.ns400, { fontSize: 16 }]}>
-                Please make your payment within the next <Text style={[commonStyles.ns600, { fontSize: 16 }]}>20 minutes</Text>
-              </Text>
 
-              <View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 5 }}>
-                <Image
-                  style={{ width: 15, height: 15 }}
-                  source={icon.info}
-                />
-                <Text style={[commonStyles.ns400, { fontSize: 16 }]}>
+            <View style={[commonStyles.commWrapOne, {marginTop: _mvs(5)}]}>
+              <Text style={[commonStyles.ns400, commonStyles.font13]}>
+                Please make your payment within the next{' '}
+                <Text style={[commonStyles.ns600, commonStyles.font13]}>
+                  20 minutes{'  '}
+                </Text>
+                <Image style={size15} source={icon.info} />
+                <Text style={[commonStyles.ns400, commonStyles.font13]}>
+                  {'  '}
                   to keep this session active.
                 </Text>
-              </View>
+              </Text>
             </View>
 
-            <View style={[styles.hr, { marginVertical: 5 }]} />
+            <View style={[styles.hr, {}]} />
 
             {/* price breakdown */}
-            <View style={{ rowGap: 15, marginBottom: 5 }}>
+            <View style={{rowGap: _mvs(8)}}>
               {/* heading */}
-              <View style={{ marginTop: 20 }}>
-                <Text style={[commonStyles.ns600, { fontSize: 20 }]}>
+              <View>
+                <Text style={[commonStyles.ns600, commonStyles.font15]}>
                   Package Summary (USD)
                 </Text>
 
-                <View style={{ flexDirection: "row", alignItems: 'center' }}>
-                  <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                    Stay: <Text style={[commonStyles.ns400, { color: b3 }]}>1 Room, 14 Nights</Text>
+                <View style={[commonStyles.commWrapOne, {marginTop: _mvs(2)}]}>
+                  <Text style={[commonStyles.ns600, commonStyles.font12]}>
+                    Stay:{' '}
+                    <Text style={[commonStyles.ns400, {color: b3}]}>
+                      1 Room, 14 Nights
+                    </Text>
                   </Text>
-                  <Text style={[commonStyles.ns600, { fontSize: 14 }]}> | </Text>
-                  <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                    Car Rental: <Text style={[commonStyles.ns400, { color: b3 }]}>14 Days</Text>
+                  <Text style={[commonStyles.ns600]}> | </Text>
+                  <Text style={[commonStyles.ns600, commonStyles.font12]}>
+                    Car Rental:{' '}
+                    <Text style={[commonStyles.ns400, {color: b3}]}>
+                      14 Days
+                    </Text>
                   </Text>
                 </View>
               </View>
 
               {/* price details */}
-              <View style={{ rowGap: 10, marginTop: 10, marginRight: 15 }}>
-                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: 'space-between' }}>
-                  <Text style={[commonStyles.ns400, { fontSize: 16, width: 230 }]}>
+              <View style={{rowGap: _mvs(10)}}>
+                <View
+                  style={[
+                    commonStyles.commWrapThree,
+                    {gap: _ms(10), marginTop: _mvs(4)},
+                  ]}>
+                  <Text
+                    style={[
+                      commonStyles.ns400,
+                      commonStyles.font14,
+                      commonStyles.flexOne,
+                    ]}>
                     Package Base Price(per person)
                   </Text>
 
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={commonStyles.ns600}>
-                      USD 161
-                    </Text>
-                    <Text style={[commonStyles.ns600, { fontSize: 11, textAlignVertical: "top" }]}>
+                  <View style={commonStyles.commWrapSeven}>
+                    <Text style={commonStyles.ns600}>USD 161</Text>
+                    <Text style={[commonStyles.ns600, commonStyles.font10, {}]}>
                       .87
                     </Text>
                   </View>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: 'space-between' }}>
-                  <Text style={[commonStyles.ns400, { fontSize: 16, width: 230 }]}>
+                <View style={[commonStyles.commWrapThree, {gap: _ms(10)}]}>
+                  <Text
+                    style={[
+                      commonStyles.ns400,
+                      commonStyles.font14,
+                      commonStyles.flexOne,
+                    ]}>
                     Taxes and Fees
                   </Text>
 
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={commonStyles.ns600}>
-                      USD 23
-                    </Text>
-                    <Text style={[commonStyles.ns600, { fontSize: 11, textAlignVertical: "top" }]}>
+                  <View style={commonStyles.commWrapSeven}>
+                    <Text style={commonStyles.ns600}>USD 23</Text>
+                    <Text style={[commonStyles.ns600, commonStyles.font10, {}]}>
                       .12
                     </Text>
                   </View>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: 'space-between' }}>
-                  <Text style={[commonStyles.ns400, { fontSize: 16, width: 230 }]}>
+                <View style={[commonStyles.commWrapThree, {gap: _ms(10)}]}>
+                  <Text
+                    style={[
+                      commonStyles.ns400,
+                      commonStyles.font14,
+                      commonStyles.flexOne,
+                    ]}>
                     Package Price(per person)
                   </Text>
 
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={commonStyles.ns600}>
-                      USD 320
-                    </Text>
-                    <Text style={[commonStyles.ns600, { fontSize: 11, textAlignVertical: "top" }]}>
+                  <View style={commonStyles.commWrapSeven}>
+                    <Text style={commonStyles.ns600}>USD 320</Text>
+                    <Text style={[commonStyles.ns600, commonStyles.font10, {}]}>
                       .00
                     </Text>
                   </View>
@@ -109,16 +142,16 @@ const Chpayment = ({ navigation }) => {
               <View style={styles.dottedLine} />
 
               {/* total price */}
-              <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: 'space-between', marginLeft: 10 }}>
-                <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
+              <View style={[commonStyles.commWrapTwo, {marginTop: _mvs(4)}]}>
+                <Text style={[commonStyles.ns700, commonStyles.font14]}>
                   Total Package Price (USD)
                 </Text>
 
-                <View style={{ flexDirection: "row" }}>
-                  <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
+                <View style={commonStyles.commWrapSeven}>
+                  <Text style={[commonStyles.ns700, commonStyles.font14]}>
                     USD 5004
                   </Text>
-                  <Text style={[commonStyles.ns700, { fontSize: 11, textAlignVertical: "top" }]}>
+                  <Text style={[commonStyles.ns700, commonStyles.font10]}>
                     .99
                   </Text>
                 </View>
@@ -127,39 +160,45 @@ const Chpayment = ({ navigation }) => {
               <View style={styles.dottedLine} />
 
               {/* pkg price */}
-              <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: 'space-between', marginLeft: 10 }}>
-                <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
+              <View style={[commonStyles.commWrapTwo, {marginTop: _mvs(4)}]}>
+                <Text style={[commonStyles.ns700, commonStyles.font14]}>
                   Package Price Payable Now(USD)
                 </Text>
 
-                <View style={{ flexDirection: "row" }}>
-                  <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
+                <View style={commonStyles.commWrapSeven}>
+                  <Text style={[commonStyles.ns700, commonStyles.font14]}>
                     USD 4400
                   </Text>
-                  <Text style={[commonStyles.ns700, { fontSize: 11, textAlignVertical: "top" }]}>
+                  <Text style={[commonStyles.ns700, commonStyles.font10]}>
                     .00
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.dottedLine} />
+              <View style={[styles.dottedLine, {marginBottom: _mvs(10)}]} />
 
               {/* Join ClubMiles and earn 2225 points or more on this booking */}
-              <View style={[styles.clubMiles, { marginTop: 0 }]}>
-                <View style={{ flexDirection: "row", alignItems: "center", columnGap: 10 }}>
-                  <Image
-                    style={{ marginRight: 5 }}
-                    source={icon.cmiles}
-                  />
+              <View style={[styles.clubMiles, {}]}>
+                <View style={[commonStyles.commWrapOne, {columnGap: _ms(8)}]}>
+                  <Image style={clubIcon} source={icon.cmiles} />
 
-                  <Text style={[commonStyles.ns600, { fontSize: 15, color: white, flex: 1 }]}>
+                  <Text
+                    style={[
+                      commonStyles.ns600,
+                      commonStyles.font12,
+                      commonStyles.flexOne,
+                      {color: white},
+                    ]}>
                     Join ClubMiles and earn 2225 points or more on this booking
                   </Text>
 
-                  <TouchableOpacity
-                    style={styles.signin}
-                  >
-                    <Text style={[commonStyles.lbB1, { fontSize: 16, color: blue }]}>
+                  <TouchableOpacity style={styles.signin}>
+                    <Text
+                      style={[
+                        commonStyles.lbB1,
+                        commonStyles.font15,
+                        {color: blue},
+                      ]}>
                       Sign In
                     </Text>
                   </TouchableOpacity>
@@ -170,38 +209,68 @@ const Chpayment = ({ navigation }) => {
             <View style={styles.hr} />
 
             {/* apply promocode */}
-            <View style={styles.promo}>
-              <Image
-                style={{ width: 25, height: 25, tintColor: blue }}
-                source={icon.tag}
+            <View style={[styles.promo, commonStyles.commWrapTwo]}>
+              <Image style={size18} source={icon.tag} tintColor={blue} />
+
+              {/* <Text
+                style={[
+                  commonStyles.ns600,
+                  commonStyles.flexOne,
+                  commonStyles.font11,
+                  {color: blue},
+                ]}>
+                Enter promo code or gift card number
+              </Text> */}
+
+              <TextInput
+                placeholder="Enter promo code or gift card number"
+                placeholderTextColor={blue}
+                style={styles.promoCodeinput}
               />
 
-              <Text style={[commonStyles.ns600, { color: blue, fontSize: 14, width: 210 }]}>
-                Enter promo code or gift card number
-              </Text>
-
-              <TouchableOpacity
-                style={styles.btn}
-              >
-                <Text style={[commonStyles.lbB1, { color: white, fontSize: 16 }]}>
+              <TouchableOpacity style={styles.btn}>
+                <Text
+                  style={[
+                    commonStyles.lbB1,
+                    commonStyles.font13,
+                    {color: white},
+                  ]}>
                   Apply
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", columnGap: 10, alignSelf: "flex-start" }}>
-              <Text style={[commonStyles.ns600, { color: blue }]}>
+            <TouchableOpacity
+              style={[
+                commonStyles.commWrapOne,
+                commonStyles.flexStart,
+                {columnGap: _ms(8), marginTop: _mvs(8)},
+              ]}>
+              <Text style={[commonStyles.ns600, {color: blue}]}>
                 Pay with credit from a previous booking
               </Text>
 
               <Image
-                style={{ width: 18, height: 18, tintColor: blue, transform: [{ rotate: "-90deg" }] }}
+                style={[size15, {transform: [{rotate: '-90deg'}]}]}
+                tintColor={blue}
                 source={icon.rightArrow}
               />
             </TouchableOpacity>
 
-            <Text style={[commonStyles.ns400, { lineHeight: 20, fontSize: 16 }]}>
-              To use any travel credit that you have with us from a previously canceled booking, please call  <Text style={[commonStyles.ns600, { color: "#DF1414", fontSize: 16 }]}>
+            <Text
+              style={[
+                commonStyles.ns400,
+                commonStyles.font13,
+                {lineHeight: _mvs(20)},
+              ]}>
+              To use any travel credit that you have with us from a previously
+              canceled booking, please call{' '}
+              <Text
+                style={[
+                  commonStyles.ns600,
+                  commonStyles.font13,
+                  {color: '#DF1414'},
+                ]}>
                 845-848-0211
               </Text>
             </Text>
@@ -209,90 +278,114 @@ const Chpayment = ({ navigation }) => {
         </ScrollView>
 
         {/* PROCEED */}
-        <View style={{ backgroundColor: b1, alignItems: "center", justifyContent: "space-between", paddingVertical: 8, paddingHorizontal: 10, flexDirection: "row" }}>
-          <View style={{ rowGap: 3 }}>
-            <Text style={[commonStyles.ns600, { fontSize: 14, color: white }]}>
-              Price
-            </Text>
-            <Text style={[commonStyles.ns600, { fontSize: 14, color: white }]}>
+        <View style={styles.proceedCon}>
+          <View style={{rowGap: _mvs(2)}}>
+            <Text style={[commonStyles.ns600, {color: white}]}>Price</Text>
+
+            <Text style={[commonStyles.ns600, {color: white}]}>
               $1320 + Taxes
             </Text>
           </View>
 
           <TouchableOpacity
-            style={{ borderWidth: 2, borderRadius: 2, borderColor: blue, width: 150, alignItems: "center", justifyContent: "center", paddingVertical: 8 }}
-            onPress={() => navigation.replace("success")}
-          >
-            <Text style={[commonStyles.ns600, { fontSize: 14, color: blue, textTransform: "uppercase" }]}>
+            style={styles.proceedBtn}
+            onPress={() => {
+              //   navigation.replace('success');
+              navigation.navigate('success');
+            }}>
+            <Text
+              style={[commonStyles.ns600, commonStyles.font13, {color: blue}]}>
               PROCEED
             </Text>
           </TouchableOpacity>
         </View>
-      </View >
-    </SafeAreaView >
-  )
+      </View>
+    </SafeAreaView>
+  );
 };
 
 export default Chpayment;
 
 const styles = StyleSheet.create({
-  parent: {
-    flex: 1,
-  },
   body: {
-    marginTop: 18,
     flex: 1,
-    backgroundColor: white,
+    backgroundColor: bgColor,
+    marginTop: _mvs(10),
   },
+
   hr: {
-    backgroundColor: "rgba(35, 32, 32, 0.15)",
+    backgroundColor: 'rgba(35, 32, 32, 0.2)',
     height: 1,
+    marginTop: _mvs(4),
   },
+
   dottedLine: {
-    borderColor: "#D8D8D8",
-    borderWidth: 1,
-    borderStyle: "dashed",
+    borderColor: '#D8D8D8',
+    borderBottomWidth: 1.22,
+    borderStyle: 'dashed',
+    marginTop: _mvs(5),
   },
+
   clubMiles: {
     backgroundColor: b1,
     borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    marginTop: -8,
+    paddingHorizontal: _ms(8),
+    paddingVertical: _mvs(12),
+    marginTop: -_mvs(8),
   },
+
   signin: {
     backgroundColor: white,
     borderWidth: 1,
     borderColor: blue,
     borderRadius: 4,
-    paddingHorizontal: 20,
-    paddingVertical: 8
+    paddingHorizontal: _ms(16),
+    paddingVertical: _mvs(4),
   },
+
   promo: {
     borderWidth: 1,
     borderColor: b2,
     borderRadius: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    marginTop: 5,
+    paddingHorizontal: _ms(6),
+    paddingVertical: _mvs(6),
+    gap: _ms(8),
   },
+
+  promoCodeinput: {
+    padding: 0,
+    color: blue,
+    ...commonStyles.ns600,
+    ...commonStyles.font11,
+    ...commonStyles.flexOne,
+  },
+
   btn: {
     borderRadius: 4,
     backgroundColor: b2,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: _ms(16),
+    paddingVertical: _mvs(5),
   },
-  btnLrg: {
-    borderRadius: 8,
-    backgroundColor: b2,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 20,
-    paddingHorizontal: 15,
+
+  proceedCon: {
+    backgroundColor: b1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: _mvs(4),
+    paddingBottom: _mvs(7),
+    paddingHorizontal: _ms(10),
+    flexDirection: 'row',
+  },
+
+  proceedBtn: {
+    borderWidth: 1.5,
+    borderRadius: 2,
+    borderColor: blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: _mvs(4.5),
+    width: _s(122),
   },
 });

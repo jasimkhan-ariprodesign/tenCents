@@ -23,6 +23,9 @@ const black111111 = '#111111';
 const primaryColor = '#6E73D3';
 const blueTransparent = 'rgba(33, 180, 226, 0.5)';
 const linkColor = '#1E90FF';
+const bgColor = '#EFF2F7';
+const green24AD53 = '#24AD53';
+const D9D9D9 = '#D9D9D9';
 
 module.exports = {
   white,
@@ -50,4 +53,7 @@ module.exports = {
   black111111,
   blueTransparent,
   linkColor,
+  bgColor,
+  green24AD53,
+  D9D9D9,
 };

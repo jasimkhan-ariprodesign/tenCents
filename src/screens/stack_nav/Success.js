@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
 
   img: {
-    width: '90%',
+    width: '75%',
     alignSelf: 'center',
     // height: _mvs(290),
     // backgroundColor: 'red',
@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
 
   backToHome: {
     borderColor: blue,
-    borderWidth: 1.5,
+    borderWidth: 1.3,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: white,
-    paddingHorizontal: _ms(45),
-    paddingVertical: _ms(8),
+    paddingHorizontal: _ms(42),
+    paddingVertical: _ms(7),
     borderRadius: 8,
   },
 
@@ -101,19 +101,19 @@ const styles = StyleSheet.create({
   ns600: {
     fontFamily: _fonts.nunitoSansSemiBold,
     color: b1,
-    fontSize: _ms(16),
+    fontSize: _ms(14),
   },
 
   ns400: {
     fontFamily: _fonts.nunitoSansRegular,
     color: b3,
-    fontSize: _ms(15),
+    fontSize: _ms(14),
   },
 
   success: {
     color: b1,
     fontFamily: 'MarkoOne-Regular',
-    fontSize: _ms(30),
+    fontSize: _ms(28),
     letterSpacing: 5,
     textAlign: 'center',
   },

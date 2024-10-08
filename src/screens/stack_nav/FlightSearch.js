@@ -15,8 +15,6 @@ import SortBottomSheet from '../../utility/SortBottomSheet';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {_fonts, _ms, _vs} from '../../components/utils/Responsive';
 
-const {width} = Dimensions.get('window');
-
 // SCROLL VIEW PE KAM KARNA HAI MONDAY KO
 
 const FlightSearch = ({navigation}) => {

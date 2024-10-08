@@ -3,10 +3,21 @@ import React from 'react';
 import {b2, white} from '../config/colors';
 import {_fonts, _ms, _s} from './utils/Responsive';
 // rewritten
-const SearchButton = ({navigation, navigationScreen, name}) => {
+const SearchButton = ({
+  navigation,
+  navigationScreen,
+  name,
+  selectedTopMenu,
+}) => {
+  // console.log('testing =>', selectedTopMenu);
+
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate(navigationScreen, {})}
+      onPress={() =>
+        navigation.navigate(navigationScreen, {
+          selectedTopMenu: selectedTopMenu,
+        })
+      }
       style={styles.parent}>
       <Text style={styles.btnText}>{name}</Text>
     </TouchableOpacity>

@@ -34,7 +34,6 @@ const Hotels = ({navigation, data}) => {
   return (
     <ScrollView
       nestedScrollEnabled
-      style={{flex: 1}}
       contentContainerStyle={{paddingBottom: _ms(60)}}
       showsVerticalScrollIndicator={false}>
       {/* trip option nav bar */}
@@ -61,12 +60,7 @@ const Hotels = ({navigation, data}) => {
 
       {/* prifile option */}
       <View style={styles.profileButtonContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: _ms(15),
-          }}>
+        <View style={[commonStyles.commWrapOne, {gap: _ms(15)}]}>
           <Image style={styles.profileIconStyle} source={icon.prologo} />
           <Text style={styles.welcomeBackTxt}>Welcome Back, Kevin!</Text>
         </View>
@@ -87,7 +81,7 @@ const Hotels = ({navigation, data}) => {
         ]}>
         <Image style={styles.profileIconStyle} source={icon.proimg} />
 
-        <View style={{flex: 1}}>
+        <View style={commonStyles.flexOne}>
           <Text style={styles.TxtOne}>Looking for last-minute deals?</Text>
           <Text style={styles.TxtTwo}>
             Speak to a travel expert and a get assistance 24/7

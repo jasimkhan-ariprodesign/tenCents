@@ -239,7 +239,7 @@ const Flights = ({
 
             {/* search button */}
 
-            <View style={{zIndex: 1}}>
+            <View style={{zIndex: 0}}>
               <SearchButton
                 navigation={navigation}
                 name="Search"

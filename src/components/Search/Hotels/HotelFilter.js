@@ -1,1953 +1,379 @@
-import { SafeAreaView, StyleSheet, Text, View, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React from 'react'
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import React, {useState} from 'react';
 import icon from '../../../config/IconAssets';
 import commonStyles from '../../../assets/css/CommonFonts';
-import { b2, b3, blue, white } from '../../../config/colors';
-import image from '../../../config/ImageAssets';
+import {b2, blue, white} from '../../../config/colors';
+import {_ms, _mvs, _width, backIconStyle} from '../../utils/Responsive';
 
-const HotelFilter = ({ navigation }) => {
-    return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <StatusBar translucent={true} barStyle={"dark-content"} />
-            <View style={{ flex: 1, marginTop: 45 }}>
-                {/* nav */}
-                <TouchableOpacity
-                    style={styles.nav}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Image
-                        style={{ width: 22, height: 22, marginRight: 10 }}
-                        source={icon.next}
-                    />
+const filtersData = [
+  {
+    category: 'Filter by:',
+    options: [{id: 1, label: 'Your Budget (per night)', range: '$20 - $300'}],
+  },
+  {
+    category: 'Popular Filters',
+    options: [
+      {id: 2, label: 'Free cancellation', count: 174},
+      {id: 3, label: 'No prepayment', count: 93},
+      {id: 4, label: 'Less than 1/2 mile', count: 17},
+      {id: 5, label: 'Distance from center of Calgary', count: null},
+      {id: 6, label: 'Hotels', count: 86},
+      {id: 7, label: 'Breakfast Included', count: 70},
+      {id: 8, label: '5 stars', count: 80},
+      {id: 9, label: 'Calgary Stampede', count: 25},
+      {id: 10, label: 'Downtown Calgary', count: 45},
+    ],
+  },
+  {
+    category: 'Sustainability',
+    options: [{id: 11, label: 'Travel Sustainable properties', count: 90}],
+  },
+  {
+    category: 'Property Rating',
+    options: [
+      {id: 12, label: '2 stars', count: 10},
+      {id: 13, label: '3 stars', count: 62},
+      {id: 14, label: '4 stars', count: 80},
+      {id: 15, label: '5 stars', count: 85},
+      {id: 16, label: 'Unrated', count: 35},
+    ],
+  },
+  {
+    category: 'Popular Facilities',
+    options: [
+      {id: 17, label: 'Fitness center', count: 57},
+      {id: 18, label: 'Parking', count: 586},
+      {id: 19, label: 'Airport shuttle', count: 59},
+      {id: 20, label: 'Pet friendly', count: 119},
+      {id: 21, label: 'Non-smoking rooms', count: 575},
+    ],
+  },
+  {
+    category: 'Meals',
+    options: [
+      {id: 22, label: 'Breakfast included', count: 524},
+      {id: 23, label: 'Half-board included', count: 86},
+    ],
+  },
+  {
+    category: 'Property Type',
+    options: [
+      {id: 24, label: 'Hotels', count: 1190},
+      {id: 25, label: 'Apartments', count: 88},
+      {id: 26, label: 'Guesthouses', count: 56},
+      {id: 27, label: 'Hostels', count: 13},
+      {id: 28, label: 'Homestays', count: 8},
+    ],
+  },
+  {
+    category: 'Amenities',
+    options: [
+      {id: 29, label: 'Free WiFi', count: 560},
+      {id: 30, label: 'Parking', count: 586},
+      {id: 31, label: 'Fitness center', count: 525},
+      {id: 32, label: 'Room service', count: 504},
+      {id: 33, label: 'Non-smoking rooms', count: 575},
+    ],
+  },
+  {
+    category: 'Room Facilities',
+    options: [
+      {id: 34, label: 'Kitchen', count: 45},
+      {id: 35, label: 'Private bathroom', count: 35},
+    ],
+  },
+  {
+    category: 'Accessibility',
+    options: [{id: 36, label: 'Wheelchair accessible', count: 21}],
+  },
+  {
+    category: 'Sustainability',
+    options: [{id: 37, label: 'Travel Sustainable', count: 120}],
+  },
+  {
+    category: 'Neighborhoods',
+    options: [
+      {id: 38, label: 'Beltline', count: 105},
+      {id: 39, label: 'Downtown Calgary', count: 65},
+      {id: 40, label: 'Kensington', count: 30},
+    ],
+  },
+  {
+    category: 'Parking Accessibility',
+    options: [
+      {id: 41, label: 'Electric vehicle charging station', count: 19},
+      {id: 42, label: 'Parking on site', count: 38},
+      {id: 43, label: 'Accessible parking', count: 21},
+    ],
+  },
+  {
+    category: 'Room Accessibility',
+    options: [
+      {id: 44, label: 'Lower bathroom sink', count: 6},
+      {id: 45, label: 'Raised toilet', count: 10},
+      {id: 46, label: 'Toilet with grab rails', count: 14},
+      {id: 47, label: 'Shower chair', count: 8},
+      {id: 48, label: 'Entire unit wheelchair accessible', count: 21},
+    ],
+  },
+];
 
-                    <Text style={[commonStyles.ns600, { fontSize: 20, textTransform: "uppercase" }]}>
-                        Filter
+const HotelFilter = ({navigation}) => {
+  const [selectedItems, setSelectedItems] = useState([]);
+  //   console.log('-->', selectedItems);
+
+  const handlePress = item => {
+    setSelectedItems(prevItems => {
+      if (prevItems.includes(item)) {
+        // Item is already selected, so remove it
+        return prevItems.filter(selectedItem => selectedItem !== item);
+      } else {
+        // Item is not selected, so add it
+        return [...prevItems, item];
+      }
+    });
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar translucent={true} barStyle={'dark-content'} />
+      <View style={[styles.container, {marginTop: _mvs(45)}]}>
+        {/* nav */}
+
+        <TouchableOpacity
+          style={styles.nav}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={[backIconStyle, {marginTop: _mvs(3)}]}
+            source={icon.next}
+          />
+
+          <Text style={[commonStyles.ns600, {fontSize: _ms(16)}]}>FILTER</Text>
+        </TouchableOpacity>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={[styles.parent]}>
+            {filtersData?.map((item, index) => {
+              const lastIndex = filtersData.length - 1;
+              // console.log(index == 0 && item);
+
+              return (
+                <View key={index}>
+                  <View style={styles.scrollParent}>
+                    {/* category name */}
+                    <Text style={[commonStyles.ns700, commonStyles.font15]}>
+                      {item?.category}
                     </Text>
-                </TouchableOpacity>
 
-                <View style={{ marginTop: 20, flex: 1 }}>
-                    <ScrollView
-                        style={{ marginLeft: 15, marginRight: 60 }}
-                        showsVerticalScrollIndicator={false}
-                    >
-                        {/* filter by */}
-                        <View style={styles.filterBy}>
-                            <View style={{ paddingHorizontal: 10, paddingTop: 5 }}>
-                                <Text style={[commonStyles.ns600, { fontSize: 18 }]}>
-                                    Filter by:
-                                </Text>
-                            </View>
-
-                            <View style={styles.hr} />
-
-                            {/* budget */}
-                            <View style={{ paddingHorizontal: 10, rowGap: 10, marginBottom: 10 }}>
-                                <Text style={commonStyles.ns600}>Your Budget (per night)</Text>
-                                <Text style={commonStyles.ns600}>$20 - $300+</Text>
-                                <View style={{ alignItems: 'center' }}>
-                                    <Image
-                                        style={{}}
-                                        source={image.priceBar}
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={styles.hr} />
-
-                            {/* Popular Filters */}
-                            <View style={{ paddingHorizontal: 10, marginTop: 8 }}>
-                                <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                    Popular Filters
-                                </Text>
-
-                                {/* Popular Filters options */}
-                                <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                Free cancellation
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>174</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                No prepayment
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>93</Text>
-                                    </View>
-
-                                    {/* break / 2 lines */}
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <View style={{ marginLeft: 15, rowGap: 5 }}>
-                                                <Text style={commonStyles.ns600}>
-                                                    Less than 1/2 mile
-                                                </Text>
-                                                <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                                                    Distance from center of Calgary
-                                                </Text>
-                                            </View>
-
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>17</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                Hotels
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>86</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                Breakfast Included
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>70</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                5 stars
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>3</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                Calgary Stampede
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>21</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                                Downtown Calgary
-                                            </Text>
-                                        </View>
-
-                                        <Text style={commonStyles.ns600}>45</Text>
-                                    </View>
-                                </View>
-                            </View>
-
-                            <View style={styles.hr} />
-
-                            {/* Sustainability */}
-                            <View style={{ paddingHorizontal: 10, marginTop: 8 }}>
-                                <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                    Sustainability
-                                </Text>
-
-                                <View style={{ paddingVertical: 10 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                        <View style={{ flexDirection: 'row', flex: 1 }}>
-                                            <TouchableOpacity style={styles.tick}>
-                                                <Image
-                                                    style={styles.tickImg}
-                                                    source={icon.check}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <View style={{ marginLeft: 15, flex: 1, rowGap: 5 }}>
-                                                <Text style={commonStyles.ns600}>
-                                                    Travel Sustainable properties
-                                                </Text>
-                                                <Text style={[commonStyles.ns600, { fontSize: 14 }]}>
-                                                    Properties taking steps to make your stay more sustainable
-                                                </Text>
-                                            </View>
-
-                                        </View>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>9000</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* property rating */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Property rating
-                            </Text>
-
-                            <Text style={[commonStyles.ns600, { fontSize: 14, marginTop: 2 }]}>
-                                Includes stars and other ratings
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            2 stars
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>10</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            3 stars
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>62</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            4 stars
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>80</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            5 stars
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Unrated
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>35</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Distance from center of Calgary */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Distance from center of Calgary
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Less than 1/2 mile
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>17</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Less than 1 mile
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>42</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Less than 2 mile
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>54</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Fun Things To Do */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Fun Things To Do
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Fitness center
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>85</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Indoor pool
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>57</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Fitness
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>57</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Hot tub/Jacuzzi
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>48</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Golf course (within 2 miles)
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>35</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Reservation policy */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Reservation policy
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Free cancellation
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>174</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            No prepayment
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>93</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Meals */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Meals
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Kitchen amenities
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>116</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Breakfast Included
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>70</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Property Type */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Property Type
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Entire homes & apartments
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>138</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Hotels
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>86</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Apartments
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>56</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Vacation Homes
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>23</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Guesthouses
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>11</Text>
-                                </View>
-
-                                {/* show all */}
-                                <TouchableOpacity
-                                    style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
-                                >
-                                    <Text style={[commonStyles.ns600, { color: blue, marginRight: 10 }]}>
-                                        Show all {9}
-                                    </Text>
-
-                                    <Image
-                                        style={{ width: 20, height: 20, transform: [{ rotate: "90deg" }], tintColor: blue }}
-                                        source={icon.rightArrow}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Number of bedrooms */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Number of bedrooms
-                            </Text>
-
-                            <View style={{ paddingVertical: 10, marginTop: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <Text style={commonStyles.ns600}>
-                                    Bedrooms
-                                </Text>
-
-                                <View style={styles.incDec}>
-                                    <TouchableOpacity style={styles.incDecBtn}>
-                                        <Image
-                                            style={{ width: 15, height: 15 }}
-                                            source={icon.minus}
-                                        />
-                                    </TouchableOpacity>
-
-                                    <Text style={commonStyles.ns600}>0</Text>
-
-                                    <TouchableOpacity style={styles.incDecBtn}>
-                                        <Image
-                                            style={{ width: 15, height: 15 }}
-                                            source={icon.plus}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Private bathrooms */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Private bathrooms
-                            </Text>
-
-                            <View style={{ paddingVertical: 10, marginTop: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <Text style={commonStyles.ns600}>
-                                    Bathrooms
-                                </Text>
-
-                                <View style={styles.incDec}>
-                                    <TouchableOpacity style={styles.incDecBtn}>
-                                        <Image
-                                            style={{ width: 15, height: 15 }}
-                                            source={icon.minus}
-                                        />
-                                    </TouchableOpacity>
-
-                                    <Text style={commonStyles.ns600}>0</Text>
-
-                                    <TouchableOpacity style={styles.incDecBtn}>
-                                        <Image
-                                            style={{ width: 15, height: 15 }}
-                                            source={icon.plus}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Landmarks */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Landmarks
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Calgary Stampede
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>21</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Calgary Tower
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>38</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Heritage Park
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>2</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Bed Preference */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Bed Preference
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Twin beds
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>1</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Double bed
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>187</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Review Score */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Review Score
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Wonderful: 9+
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>46</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Very Good: 8+
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>121</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Good: 7+
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>154</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Pleasant: 6+
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>166</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Amenities */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Amenities
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Free WiFi
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>184</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Parking
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>178</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Non-smoking rooms
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>142</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Family rooms
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>93</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            24-hour front desk
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>90</Text>
-                                </View>
-
-                                {/* show all */}
-                                <TouchableOpacity
-                                    style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
-                                >
-                                    <Text style={[commonStyles.ns600, { color: blue, marginRight: 10 }]}>
-                                        Show all {14}
-                                    </Text>
-
-                                    <Image
-                                        style={{ width: 20, height: 20, transform: [{ rotate: "90deg" }], tintColor: blue }}
-                                        source={icon.rightArrow}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Room amenities */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Room amenities
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Executive lounge access
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>6</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Washing machine
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>86</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Private bathroom
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>138</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Socket near the bed
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>84</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Private pool
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>2</Text>
-                                </View>
-
-                                {/* show all */}
-                                <TouchableOpacity
-                                    style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
-                                >
-                                    <Text style={[commonStyles.ns600, { color: blue, marginRight: 10 }]}>
-                                        Show all {25}
-                                    </Text>
-
-                                    <Image
-                                        style={{ width: 20, height: 20, transform: [{ rotate: "90deg" }], tintColor: blue }}
-                                        source={icon.rightArrow}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Neighborhood */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Neighborhood
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Southwest Calgary
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>19</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Downtown Calgary
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>45</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Northeast Calgary
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>47</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Beltline
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>20</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            University of Calgary District
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>6</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Seton
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Kensington
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>1</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Brands */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Brands
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Holiday Inn Express
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>5</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Comfort Inn
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>4</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Sandman Hotel Group
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>4</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Best Western Plus
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>4</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Days Inn
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Holiday Inn Hotels & Resorts
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Courtyard by Marriott
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Residence Inn
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Super 8
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Hampton Inn
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>3</Text>
-                                </View>
-
-                                {/* show all */}
-                                <TouchableOpacity
-                                    style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
-                                >
-                                    <Text style={[commonStyles.ns600, { color: blue, marginRight: 10 }]}>
-                                        Show all {20}
-                                    </Text>
-
-                                    <Image
-                                        style={{ width: 20, height: 20, transform: [{ rotate: "90deg" }], tintColor: blue }}
-                                        source={icon.rightArrow}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Property Accessibility */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Property Accessibility
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Wheelchair accessible
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>39</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Toilet with grab rails
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>28</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Raised toilet
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>23</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Lowered sink
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>21</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Bathroom emergency cord
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>6</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Visual aids (Braille)
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>16</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Visual aids (tactile signs)
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>9</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15 }]}>
-                                            Auditory guidance
-                                        </Text>
-                                    </View>
-
-                                    <Text style={commonStyles.ns600}>9</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        {/* Room Accessibility */}
-                        <View style={{ paddingHorizontal: 15, marginTop: 8 }}>
-                            <Text style={[commonStyles.ns700, { fontSize: 16 }]}>
-                                Room Accessibility
-                            </Text>
-
-                            <View style={{ rowGap: 10, paddingVertical: 10, marginTop: 8 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Entire unit located on ground floor
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>25</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Upper floors accessible by elevator
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>54</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Entire unit wheelchair accessible
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>24</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Toilet with grab rails
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>18</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Adapted bath
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>12</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Roll-in shower
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>19</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Walk-in shower
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>36</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Raised toilet
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>19</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Lower sink
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>11</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Emergency cord in bathroom
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>3</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <TouchableOpacity style={styles.tick}>
-                                            <Image
-                                                style={styles.tickImg}
-                                                source={icon.check}
-                                            />
-                                        </TouchableOpacity>
-
-                                        <Text style={[commonStyles.ns600, { marginLeft: 15, flex: 1 }]}>
-                                            Shower chair
-                                        </Text>
-                                    </View>
-
-                                    <Text style={[commonStyles.ns600, { marginLeft: 10 }]}>11</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={styles.hr} />
-
-                        <View style={{ marginTop: 8, marginBottom: 10, borderRadius: 8, alignItems: "center", justifyContent: "center" }}>
-                            <Image
-                                style={{ width: "100%" }}
-                                source={image.map}
-                                resizeMode='stretch'
-                            />
-
-                            <Image
-                                style={{ width: 40, height: 40, position: "absolute", top: 40 }}
-                                source={icon.locDest}
-                            />
-
-                            <TouchableOpacity style={{ position: "absolute", bottom: 20 }}>
-                                <Text style={commonStyles.ns600}>Show on map</Text>
+                    {/* option map here  */}
+                    {item?.options?.map((options, i) => (
+                      <View key={i} style={styles.buttonCon}>
+                        <View
+                          style={[
+                            commonStyles.commWrapSeven,
+                            commonStyles.flexOne,
+                            {gap: _ms(6)},
+                          ]}>
+                          {/* button for select and deselect */}
+                          {index !== 0 && (
+                            <TouchableOpacity
+                              onPress={() => {
+                                //   console.log(options.label);
+                                handlePress(options.label);
+                              }}
+                              style={[
+                                styles.button,
+                                {
+                                  backgroundColor: selectedItems.includes(
+                                    options.label,
+                                  )
+                                    ? blue
+                                    : white,
+
+                                  borderRadius: selectedItems.includes(
+                                    options.label,
+                                  )
+                                    ? 100
+                                    : 5,
+                                },
+                              ]}>
+                              <Image
+                                source={icon.check}
+                                style={styles.checkicon}
+                              />
                             </TouchableOpacity>
+                          )}
+
+                          {/* category names */}
+                          <View>
+                            <Text
+                              style={[
+                                commonStyles.ns600,
+                                commonStyles.flexOne,
+                              ]}>
+                              {options?.label}
+                            </Text>
+
+                            {/* range is here -- $20 – $300+ */}
+                            {options?.range && (
+                              <Text
+                                style={[
+                                  commonStyles.ns600,
+                                  commonStyles.flexOne,
+                                  {
+                                    marginTop: _mvs(5),
+                                  },
+                                ]}>
+                                {options?.range}
+                              </Text>
+                            )}
+                          </View>
                         </View>
-                    </ScrollView>
 
-                    {/* bottom */}
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10 }}>
-                        <TouchableOpacity
-                            style={styles.apply}
-                        >
-                            <Text style={[commonStyles.lbB1, { color: white, textTransform: 'uppercase' }]}>
-                                Apply
-                            </Text>
-                        </TouchableOpacity>
+                        {/* item count */}
 
-                        <TouchableOpacity
-                            style={styles.clear}
-                        >
-                            <Text style={[commonStyles.lbB1, { color: b2, textTransform: 'uppercase' }]}>
-                                CLEAR ALL FILTERS
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                        <Text
+                          style={[
+                            commonStyles.ns600,
+                            {
+                              textAlign: 'right',
+                              width: _ms(30),
+                            },
+                          ]}>
+                          {options?.count}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  {lastIndex != index && <View style={styles.horizontalLine} />}
                 </View>
-            </View>
-        </SafeAreaView>
-    )
+              );
+            })}
+          </View>
+        </ScrollView>
+
+        <View style={styles.bottomBtnCon}>
+          <Pressable style={styles.applyBtn}>
+            <Text
+              style={[commonStyles.lbB1, {color: white, fontSize: _ms(14)}]}>
+              APPLY
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => {
+              setSelectedItems([]);
+            }}
+            style={[styles.applyBtn, {backgroundColor: white}]}>
+            <Text style={[commonStyles.lbB1, {color: b2, fontSize: _ms(14)}]}>
+              CLEAR ALL FILTERS
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 export default HotelFilter;
 
 const styles = StyleSheet.create({
-    nav: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignSelf: "flex-start",
-        marginLeft: 13,
-    },
-    filterBy: {
-        borderWidth: 1,
-        borderColor: '#D8D8D8',
-        borderRadius: 4,
-    },
-    hr: {
-        backgroundColor: "#D8D8D8",
-        height: 1,
-        marginVertical: 10,
-    },
-    tick: {
-        backgroundColor: blue,
-        width: 25,
-        height: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 25
-    },
-    tickImg: {
-        width: 12,
-        height: 12,
-        tintColor: white,
-    },
-    apply: {
-        borderRadius: 8,
-        backgroundColor: b2,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 40,
-    },
-    clear: {
-        borderRadius: 8,
-        borderColor: b2,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderWidth: 2
-    },
-    incDec: {
-        borderWidth: 1,
-        borderColor: b3,
-        borderRadius: 2,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: 'space-between',
-        width: 150,
-        paddingVertical: 8,
-        paddingHorizontal: 6
-    },
-    incDecBtn: {
-        paddingHorizontal: 6,
-        paddingVertical: 8,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: white,
+  },
+
+  nav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    marginLeft: _ms(15),
+    gap: _ms(10),
+  },
+
+  parent: {
+    // minWidth: _width - _ms(100),
+    // maxWidth: _width - _ms(30),
+    // backgroundColor: 'teal',
+    width: _width - _ms(80),
+    marginHorizontal: _ms(15),
+    marginVertical: _mvs(15),
+    paddingVertical: _mvs(14),
+    borderRadius: 6,
+    backgroundColor: white,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#e6e6e6',
+  },
+
+  checkicon: {
+    width: _ms(10),
+    height: _ms(10),
+    resizeMode: 'contain',
+    tintColor: white,
+  },
+
+  buttonCon: {
+    backgroundColor: white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: _ms(2),
+    paddingVertical: _mvs(6),
+    justifyContent: 'space-between',
+  },
+
+  button: {
+    width: _ms(22),
+    height: _ms(22),
+    backgroundColor: blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: blue,
+    elevation: 1,
+  },
+
+  scrollParent: {
+    marginHorizontal: _ms(10),
+  },
+
+  horizontalLine: {
+    height: 1,
+    backgroundColor: '#e6e6e6',
+    marginTop: _mvs(5),
+    marginBottom: _mvs(10),
+    marginHorizontal: 1,
+  },
+
+  bottomBtnCon: {
+    backgroundColor: white,
+    flexDirection: 'row',
+    paddingVertical: _mvs(5),
+    paddingBottom: _mvs(10),
+    paddingHorizontal: _ms(15),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  applyBtn: {
+    backgroundColor: b2,
+    paddingVertical: _mvs(6),
+    paddingHorizontal: _ms(25),
+    borderWidth: 2,
+    borderColor: b2,
+    borderRadius: 5,
+  },
 });
